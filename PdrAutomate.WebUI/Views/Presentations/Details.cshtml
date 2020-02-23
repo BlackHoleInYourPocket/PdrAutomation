@@ -1,0 +1,21 @@
+﻿@model IEnumerable<PresentationClass>
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+@foreach (var item in Model)
+{
+    <p>Presentation Name : @item.Presentation.PresentationName</p>
+    <p>Toplam Kapasite : @item.Class.ClassCapacity</p>
+    <p>Kayıtlı Öğrenci Sayısı : @item.CurrentCapacity</p>
+    <p>Sınıf : @item.Class.ClassName</p>
+    <p>Section :  @item.Section</p>
+    <button class="btn-block" onclick="myFunction(@item.Presentation.PresentationId,@User.Identity.Name)">
+        <a asp-controller="Presentations"
+           asp-action="AddStudent"
+           asp-route-presentationId="@item.Presentation.PresentationId"
+           asp-route-studentSchoolId="@User.Identity.Name">Katıl</a>
+    </button>
+}
