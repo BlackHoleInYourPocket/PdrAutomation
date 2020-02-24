@@ -29,7 +29,10 @@
             <img src="img/logo.png" alt="">
         </a>
         <div class="header-right">
-            <a href="#" class="hr-btn">Help</a>
+            <a asp-controller="Student"
+               asp-action="ShowPresentations"
+               asp-route-studentSchoolId="@User.Identity.Name" 
+               class="hr-btn">Sunumlarım</a>
             <span>|</span>
             <div class="user-panel">
                 @if (User.Identity.IsAuthenticated)

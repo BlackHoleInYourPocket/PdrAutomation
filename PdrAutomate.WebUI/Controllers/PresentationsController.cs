@@ -45,7 +45,6 @@ namespace PdrAutomate.WebUI.Controllers
         }
         public IActionResult AddStudent(int presentationId, string studentSchoolId)
         {
-
             IEnumerable<Student> std = studentDataAccess
                  .GetAll()
                  .Where(i => i.StudentSchoolId == studentSchoolId)
@@ -61,6 +60,7 @@ namespace PdrAutomate.WebUI.Controllers
             IEnumerable<Student> prstd = studentPresentationDataAccess
                 .GetAll()
              .Where(i => i.StudentId == id)
+             .Where(i => i.PresentationId == presentationId)
              .Select(i => new Student()
              {
                  StudentId = i.StudentId

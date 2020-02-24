@@ -1,0 +1,78 @@
+﻿@model List<PresentationClass>
+@{
+    ViewData["Title"] = "ShowPresentations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/js/bootstrap.min.js"></script>
+<script src="~/js/jquery-3.2.1.min.js"></script>
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Katıldığınız Sunumlar</h3>
+        </div>
+        <ul class="list-group">
+            @foreach (var item in Model)
+            {
+                <li class="list-group-item">
+                    <div class="row toggle" id="dropdown-detail-@item.PresentationId.ToString()" data-toggle="detail-@item.PresentationId.ToString()">
+                        <div class="col-xs-10">
+                            @item.Presentation.PresentationName
+                        </div>
+                        <div class="col-xs-2"><i class="fa fa-chevron-down pull-right"></i></div>
+                    </div>
+                    <div id="detail-@item.PresentationId.ToString()">
+                        <hr></hr>
+                        <div class="container">
+                            <div class="fluid-row">
+                                <div class="col-xs-1">
+                                    Sınıf
+                                </div>
+                                <div class="col-xs-5">
+                                    @item.Class.ClassName
+                                </div>
+                                <div class="col-xs-1">
+                                    Sınıf Kapasitesi
+                                </div>
+                                <div class="col-xs-5">
+                                    @item.Class.ClassCapacity
+                                </div>
+                                <div class="col-xs-1">
+                                    Kayıtlı Öğrenci Sayısı
+                                </div>
+                                <div class="col-xs-5">
+                                    @item.CurrentCapacity
+                                </div>
+                                <div class="col-xs-1">
+                                    Sabah/Öğlen
+                                </div>
+                                <div class="col-xs-5">
+                                    @if (item.Section == 0)
+                                    {
+                                        <text>Sabah</text>
+                                    }
+                                    @if (item.Section == 1)
+                                    {
+                                        <text>Öğlen</text>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('[id^=detail-]').hide();
+        $('.toggle').click(function () {
+            $input = $(this);
+            $target = $('#' + $input.attr('data-toggle'));
+            $target.slideToggle();
+        });
+    });
+</script>
+
