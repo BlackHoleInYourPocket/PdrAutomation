@@ -38,6 +38,11 @@
                 @if (User.Identity.IsAuthenticated)
                 {
                     <a href="" class="login">@User.Identity.Name</a>
+                    <form method="post" asp-controller="Account" 
+                          asp-action="Logout"
+                          asp-route-name="@User.Identity.Name">                        
+                        <input type="submit" value="Logout" />
+                    </form>
                 }
                 else
                 {

@@ -49,5 +49,13 @@ namespace PdrAutomate.WebUI.Controllers
 
             return View(model);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout(string name)
+        {
+            var user = await userManager.FindByNameAsync(name);
+            await signInManager.SignOutAsync();
+            return RedirectToAction("Login");
+        }
     }
 }
