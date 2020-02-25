@@ -53,7 +53,7 @@ namespace PdrAutomate.WebUI.Controllers
                 .Where(x => x.PresentationId == presentation.PresentationId)
                 .Select(i => new PresentationClass()
                 {
-                    Class=i.Class,
+                    Class = i.Class,
                     ClassId = i.ClassId,
                     CurrentCapacity = i.CurrentCapacity,
                     Presentation = i.Presentation,
@@ -65,6 +65,32 @@ namespace PdrAutomate.WebUI.Controllers
             }
 
             return View(attendedPresentations);
+        }
+        [HttpPost]
+        public string RemovePresentation(string studentSchoolId, string presentationId)
+        {
+            try
+            {
+                var student = studentDataAccess.GetAll()
+                    .Where(x => x.StudentSchoolId == studentSchoolId)
+                    .Select(i => new Student()
+                    {
+                        StudentId = i.StudentId
+                    }).ToList();
+
+                var removePresentation = new StudentPresentation()
+                {
+                    PresentationId = Convert.ToInt32(presentationId),
+                    StudentId = student[0].StudentId
+                };
+                studentPresentationDataAccess.Delete(removePresentation);
+                studentPresentationDataAccess.Save();
+                return "Silme işlemi başarılı";
+            }
+            catch (Exception ex)
+            {
+                return "Silme işlemi başarısız";
+            }
         }
     }
 }

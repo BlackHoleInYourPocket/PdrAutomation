@@ -11,7 +11,5 @@ namespace PdrAutomate.WebUI.Entity
         public string StudentSchoolId { get; set; }
         public string Password { get; set; }
         public StudentClass ClassId { get; set; }
-        public string StudentName { get; set; }
-
     }
 }
