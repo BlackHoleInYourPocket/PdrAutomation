@@ -14,20 +14,25 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
 
         }
 
-        public DbSet<Student> Students { get; set; }
-        public DbSet<Presentation> Presentations { get; set; }
         public DbSet<Class> Classes { get; set; }
+        public DbSet<ClassPresentationsession> ClassPresentationsessions {get;set;}
+        public DbSet<Presentation> Presentations { get; set; }
+        public DbSet<PresentationSession> PresentationSessions { get; set; }
+        public DbSet<Sessions> Sessions { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<StudentPresentationsession> StudentPresentationsessions { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<PresentationClass>()
-                .HasKey(pc => new { pc.PresentationId, pc.ClassId });
-            modelBuilder.Entity<StudentClass>()
-                .HasKey(sc => new { sc.StudentId, sc.ClassId });
-            modelBuilder.Entity<StudentPresentation>()
-                .HasKey(sp => new { sp.StudentId, sp.PresentationId });
-
-
+            modelBuilder.Entity<Sessions>()
+                .HasKey(pc => new { pc.SessionId});
+            modelBuilder.Entity<ClassPresentationsession>()
+                .HasKey(pc => new { pc.ClassId,pc.PresentationId,pc.SessionId});
+            modelBuilder.Entity<PresentationSession>()
+                .HasKey(sc => new { sc.PresentationID,sc.SessionId});
+            modelBuilder.Entity<StudentPresentationsession>()
+                .HasKey(pc => new { pc.StudentId, pc.PresentationId,pc.SessionId });
         }
     }
 }

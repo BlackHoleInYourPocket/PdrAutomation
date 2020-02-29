@@ -53,37 +53,66 @@
         margin-bottom: 30px;
     }
 </style>
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/js/bootstrap.min.js"></script>
 <script src="~/js/jquery-3.2.1.min.js"></script>
-<script>
-    @if (ViewData.ModelState["Error"] != null)
-        {
-            <text>
-            $(document).ready(function () {
-                alert('@ViewData.ModelState["Error"].Errors.First().ErrorMessage');
-            });
-            </text>
-        }
-
-</script>
-
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
 <section>
     <div class="container">
-        <div class="row">
-            <div class="gallery col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <h1 class="gallery-title">Sunumlar</h1>
-            </div>
-            @foreach (var item in Model)
-            {
-                <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
-                    <h2>
-                        <a asp-controller="Presentations"
-                           asp-action="Details"
-                           asp-route-id="@item.PresentationId">@item.PresentationName</a>
-                    </h2>
+        <div>
+            <div class="row">
+                <div class="gallery col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <h1 class="gallery-title">Sunumlar</h1>
                 </div>
-            }
+                @foreach (var item in Model)
+                {
+                    <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6" align="right">
+                                    @item.PresentationName
+                                </div>
+                                <div class="toggle" id="dropdown-detail-@item.PresentationId.ToString()" data-toggle="detail-@item.PresentationId.ToString()">
+                                    <i class="fa fa-chevron-down pull-right"></i>
+                                </div>
+                            </div>
+                            <div id="detail-@item.PresentationId.ToString()">
+                                <hr></hr>
+                                <div class="container">
+                                    @foreach (var sessions in item.Sessions)
+                                    {
+                                        <div class="fluid-row">
+                                            <div class="col-xs-1">
+                                                @sessions.Sessions.StartTime
+                                                <text> - </text>
+                                                @sessions.Sessions.EndTime
+                                                <button class="btn-block">
+                                                    <a asp-controller="Presentations"
+                                                       asp-action="Details"
+                                                       asp-route-presentationId="@sessions.PresentationID"
+                                                       asp-route-sessionId="@sessions.SessionId">
+                                                        Ayrıntılar
+                                                    </a>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </li>
+                    </div>
+                }
+            </div>
         </div>
-
     </div>
 </section>
-
+<script>
+    $(document).ready(function () {
+        $('[id^=detail-]').hide();
+        $('.toggle').click(function () {
+            $input = $(this);
+            $target = $('#' + $input.attr('data-toggle'));
+            $target.slideToggle();
+        });
+    });
+</script>

@@ -13,74 +13,98 @@ namespace PdrAutomate.WebUI.Controllers
     [Authorize]
     public class PresentationsController : Controller
     {
-        IPresentationDataAccess presentationDataAccess;
-        IPresentationClassDataAccess presentationClassDataAccess;
-        IStudentPresentationDataAccess studentPresentationDataAccess;
-        IStudentDataAccess studentDataAccess;
-        public PresentationsController(IStudentDataAccess _studentDataAccess, IStudentPresentationDataAccess _studentPresentationDataAccess, IPresentationDataAccess _presentationDataAccess, IPresentationClassDataAccess _presentationClassDataAccess)
+        IUnitOfWork uow;
+        public PresentationsController(IUnitOfWork _uow)
         {
-            presentationDataAccess = _presentationDataAccess;
-            presentationClassDataAccess = _presentationClassDataAccess;
-            studentPresentationDataAccess = _studentPresentationDataAccess;
-            studentDataAccess = _studentDataAccess;
+            uow = _uow;
         }
         public IActionResult Index()
         {
-            return View(presentationDataAccess.GetAll());
+
+            List<Presentation> returnList = new List<Presentation>();
+            var presentations = uow.PresentationDataAccess.GetAll().ToList();
+            foreach (var presentation in presentations)
+            {
+                presentation.Sessions = uow.PresentationSession
+                .GetAll()
+                .Where(i => i.PresentationID == presentation.PresentationId)
+                .ToList();
+
+                foreach (var session in presentation.Sessions)
+                {
+                    session.Sessions = uow.SessionsDataAccess
+                                        .GetAll()
+                                        .Where(i => i.SessionId == session.SessionId)
+                                        .Select(i => new Sessions()
+                                        {
+                                            StartTime = i.StartTime,
+                                            EndTime = i.EndTime
+                                        })
+                                        .FirstOrDefault();
+                }
+
+                returnList.Add(presentation);
+            }
+
+            return View(returnList);
         }
 
-        public IActionResult Details(int id)
+        public IActionResult Details(int presentationId, int sessionId)
         {
-            return View(presentationClassDataAccess
-                .GetAll()
-                .Where(i => i.PresentationId == id)
-                //.Include(i => i.Class)
-                //.ThenInclude(i => i.ClassCapacity)
-                .Select(i => new PresentationClass()
-                {
-                    Presentation = i.Presentation,
-                    Class = i.Class,
-                    CurrentCapacity = i.CurrentCapacity
-                }));
+            var classInfo = uow.ClassPresentationsession.GetAll()
+                .Where(i => i.PresentationId == presentationId)
+                .Where(i => i.SessionId == sessionId)
+                .FirstOrDefault();
+            classInfo.Class = uow.ClassDataAccess.GetAll().Where(i => i.ClassId == classInfo.ClassId).FirstOrDefault();
+            classInfo.Presentation = uow.PresentationDataAccess.GetAll().Where(i => i.PresentationId == classInfo.PresentationId).FirstOrDefault();
+            classInfo.Sessions = uow.SessionsDataAccess.GetAll().Where(i => i.SessionId == classInfo.SessionId).FirstOrDefault();
+            return View(classInfo);
         }
-        public IActionResult AddStudent(int presentationId, string studentSchoolId)
+        public string AddStudent(int presentationId, string studentSchoolId, int sessionId)
         {
-            IEnumerable<Student> std = studentDataAccess
-                 .GetAll()
-                 .Where(i => i.StudentSchoolId == studentSchoolId)
-                 .Select(i => new Student()
-                 {
-                     StudentId = i.StudentId
-                 });
-            int id = 0;
-            foreach (var item in std)
+            var _studentId = uow.StudentDataAccess
+                            .GetAll()
+                            .Where(i => i.StudentSchoolId == studentSchoolId)
+                            .FirstOrDefault().StudentId;
+            var newStudent = new StudentPresentationsession()
             {
-                id = item.StudentId;
-            }
-            IEnumerable<Student> prstd = studentPresentationDataAccess
-                .GetAll()
-             .Where(i => i.StudentId == id)
-             .Where(i => i.PresentationId == presentationId)
-             .Select(i => new Student()
-             {
-                 StudentId = i.StudentId
-             });
-            if (prstd.Count() == 0 || prstd == null)
+                PresentationId = presentationId,
+                SessionId = sessionId,
+                StudentId = _studentId
+            };
+            var isRegistered = uow.studentPresentationsessionDataAccess
+                            .Find(i => i.StudentId == _studentId
+                            && i.PresentationId == presentationId
+                            && i.SessionId == sessionId)
+                            .FirstOrDefault();
+            if (isRegistered != null)
             {
-                StudentPresentation newRecord = new StudentPresentation()
-                {
-                    PresentationId = presentationId,
-                    StudentId = id
-                };
-                studentPresentationDataAccess.Add(newRecord);
-                studentPresentationDataAccess.Save();
-                ModelState.AddModelError("Error", "Kayıt Tamamlandı");
+                return "Zaten bu sunuma kayıtlısınız";
             }
-            else
+
+            var isAvailableForSession = uow.studentPresentationsessionDataAccess
+                            .GetAll()
+                            .Where(i => i.StudentId == _studentId
+                            && i.SessionId == sessionId)
+                            .FirstOrDefault();
+
+            if (isAvailableForSession != null)
             {
-                ModelState.AddModelError("Error", "Zaten Kayıtlısınız");
+                return "Zaten bu saatte bir sunuma kayıtlısınız";
             }
-            return RedirectToAction("Index", presentationDataAccess.GetAll());
+
+            try
+            {
+                uow.studentPresentationsessionDataAccess
+                                    .Add(newStudent);
+                uow.SaveChanges();
+                return "Kaydınız tamamlandı.";
+            }
+            catch (Exception)
+            {
+                return "Kayıt işleminiz yarıda kaldı. Lütfen tekrar deneyiniz.";
+                throw;
+            }
         }
     }
 }

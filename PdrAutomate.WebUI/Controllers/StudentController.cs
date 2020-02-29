@@ -14,14 +14,10 @@ namespace PdrAutomate.WebUI.Controllers
     [Authorize]
     public class StudentController : Controller
     {
-        IStudentDataAccess studentDataAccess;
-        IStudentPresentationDataAccess studentPresentationDataAccess;
-        IPresentationClassDataAccess presentationClassDataAccess;
-        public StudentController(IPresentationClassDataAccess _presentationClassDataAccess, IStudentDataAccess _studentDataAccess, IStudentPresentationDataAccess _studentPresentationDataAccess)
+        IUnitOfWork uow;
+        public StudentController(IUnitOfWork _uow)
         {
-            studentDataAccess = _studentDataAccess;
-            studentPresentationDataAccess = _studentPresentationDataAccess;
-            presentationClassDataAccess = _presentationClassDataAccess;
+            uow = _uow;
         }
         // GET: /<controller>/
         public IActionResult Index()
@@ -30,64 +26,72 @@ namespace PdrAutomate.WebUI.Controllers
         }
 
         public IActionResult ShowPresentations(string studentSchoolId)
-        {
-            var student = studentDataAccess.GetAll()
-                .Where(x => x.StudentSchoolId == studentSchoolId)
-                .Select(i => new Student()
-                {
-                    StudentId = i.StudentId
-                }).ToList();
+        {            
+            List<ClassPresentationsession> returnList = new List<ClassPresentationsession>();
+            var studentId = uow.StudentDataAccess
+                            .GetAll()
+                            .Where(i => i.StudentSchoolId == studentSchoolId)
+                            .FirstOrDefault()
+                            .StudentId;
 
-            var presentationIds = studentPresentationDataAccess.GetAll()
-                .Where(x => x.StudentId == student[0].StudentId)
-                .Select(i => new StudentPresentation()
-                {
-                    PresentationId = i.PresentationId
-                }).ToList();
+            var registeredPresentations = uow.studentPresentationsessionDataAccess
+                            .GetAll()
+                            .Where(i => i.StudentId == studentId)
+                            .ToList();
 
-            List<PresentationClass> attendedPresentations = new List<PresentationClass>();
-
-            foreach (var presentation in presentationIds)
+            foreach(var presentation in registeredPresentations)
             {
-                var list = presentationClassDataAccess.GetAll()
-                .Where(x => x.PresentationId == presentation.PresentationId)
-                .Select(i => new PresentationClass()
-                {
-                    Class = i.Class,
-                    ClassId = i.ClassId,
-                    CurrentCapacity = i.CurrentCapacity,
-                    Presentation = i.Presentation,
-                    PresentationId = i.PresentationId,
-                    Section = i.Section
-                }).ToList();
+                var item = new ClassPresentationsession();
 
-                attendedPresentations.Add(list[0]);
+                item.PresentationId = presentation.PresentationId;
+                item.Presentation = uow.PresentationDataAccess
+                            .GetAll()
+                            .Where(i => i.PresentationId == item.PresentationId)
+                            .FirstOrDefault();
+                item.SessionId = presentation.SessionId;
+                item.Sessions = uow.SessionsDataAccess
+                            .GetAll()
+                            .Where(i => i.SessionId == item.SessionId)
+                            .FirstOrDefault();
+                var classInfos = uow.ClassPresentationsession
+                            .GetAll()
+                            .Where(i => i.PresentationId == item.PresentationId
+                            && i.SessionId == item.SessionId)
+                            .FirstOrDefault();
+
+                item.CurrentCapacity = classInfos.CurrentCapacity;
+                item.Class = uow.ClassDataAccess
+                            .GetAll()
+                            .Where(i => i.ClassId == classInfos.ClassId)
+                            .FirstOrDefault();
+                returnList.Add(item);
             }
 
-            return View(attendedPresentations);
+            return View(returnList);
         }
+
         [HttpPost]
-        public string RemovePresentation(string studentSchoolId, string presentationId)
+        public string RemovePresentation(string studentSchoolId, int presentationId, int sessionId)
         {
+            var studentId = uow.StudentDataAccess
+                   .GetAll()
+                   .Where(i => i.StudentSchoolId == studentSchoolId)
+                   .FirstOrDefault()
+                   .StudentId;
             try
             {
-                var student = studentDataAccess.GetAll()
-                    .Where(x => x.StudentSchoolId == studentSchoolId)
-                    .Select(i => new Student()
-                    {
-                        StudentId = i.StudentId
-                    }).ToList();
-
-                var removePresentation = new StudentPresentation()
+                var deletedItem = new StudentPresentationsession()
                 {
-                    PresentationId = Convert.ToInt32(presentationId),
-                    StudentId = student[0].StudentId
+                    StudentId = studentId,
+                    PresentationId = presentationId,
+                    SessionId = sessionId
                 };
-                studentPresentationDataAccess.Delete(removePresentation);
-                studentPresentationDataAccess.Save();
+
+                uow.studentPresentationsessionDataAccess.Delete(deletedItem);
+                uow.SaveChanges();
                 return "Silme işlemi başarılı";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return "Silme işlemi başarısız";
             }

@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 
 namespace PdrAutomate.WebUI.Entity
 {
-    public class Presentation
+    public class Sessions
     {
-        public int PresentationId { get; set; }
-        public string PresentationName { get; set; }
-        public List<PresentationSession> Sessions { get; set; }
+        public int SessionId { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public List<PresentationSession> Presentations { get; set; }
         public List<ClassPresentationsession> ClassPresentationsessions { get; set; }
         public List<StudentPresentationsession> StudentPresentationsessions { get; set; }
     }

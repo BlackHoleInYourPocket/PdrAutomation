@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace PdrAutomate.WebUI.DataAccess.Abstract
 {
-    public interface IStudentPresentationDataAccess : IGenericDataAccess<StudentPresentation>
+    public interface IPresentationSession:IGenericDataAccess<PresentationSession>
     {
-
     }
 }

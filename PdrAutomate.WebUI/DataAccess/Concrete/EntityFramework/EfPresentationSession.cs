@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
 {
-    public class EfPresentationClassDataAccess : EfGenericDataAccess<PresentationClass>, IPresentationClassDataAccess
+    public class EfPresentationSession:EfGenericDataAccess<PresentationSession>,IPresentationSession
     {
-        public EfPresentationClassDataAccess(PdrAutomateContext context) : base(context)
+        public EfPresentationSession(PdrAutomateContext context) : base(context)
         {
 
         }

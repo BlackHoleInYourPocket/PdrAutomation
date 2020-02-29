@@ -18,50 +18,135 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
             context.Database.Migrate();
             if (!context.Students.Any())
             {
-                var Students = new[]{
-                    new Student(){StudentSchoolId = "2015510076",Password = "123"}
-                };
-
-                context.Students.AddRange(Students);
-
-
                 var Classes = new[]
                 {
-                new Class(){ClassName="9A",ClassCapacity=30}
+                    new Class()
+                    {
+                        ClassName="10A",
+                        ClassCapacity=20
+                    },
+                    new Class()
+                    {
+                        ClassName="10B",
+                        ClassCapacity=20
+                    },
                 };
-
-                context.Classes.AddRange(Classes);
-
-                var StudentClass = new[]
-                {
-                new StudentClass(){Class=Classes[0],Student=Students[0]}
-                };
-
-                context.AddRange(StudentClass);
+                context.AddRange(Classes);
 
                 var Presentations = new[]
                 {
-                    new Presentation(){PresentationName="Bilgisayar"},
-                    new Presentation(){PresentationName="Kimya"}
+                    new Presentation()
+                    {
+                        PresentationName="Bilgisayar",
+                    },
+                    new Presentation()
+                    {
+                        PresentationName="Kimya",
+                    },
                 };
                 context.AddRange(Presentations);
 
-                var PresentationClass = new[]
+                var Sessions = new[]
                 {
-                    new PresentationClass(){Class=Classes[0],Presentation=Presentations[0],CurrentCapacity=0,Section=0},
-                    new PresentationClass(){Class=Classes[0],Presentation=Presentations[1],CurrentCapacity=0,Section=1}
+                    new Sessions()
+                    {
+                        StartTime=new DateTime(2020,02,02,9,0,0),
+                        EndTime =new DateTime(2020,02,02,9,0,0)
+                    },
+                    new Sessions()
+                    {
+                        StartTime=new DateTime(2020,02,02,10,0,0),
+                        EndTime =new DateTime(2020,02,02,11,0,0)
+                    },
                 };
-                context.AddRange(PresentationClass);
+                context.AddRange(Sessions);
 
-                var StudentPresentations = new[]
+                var Students = new[]
                 {
-                    new StudentPresentation(){Student=Students[0],Presentation=Presentations[0]}
+                    new Student()
+                    {
+                        StudentName="Seyfi",
+                        StudentSurname="Zeyrek",
+                        StudentSchoolId="55",
+                        Password="seyf1903",
+                        Class=Classes[0]
+                    }
                 };
-                context.AddRange(StudentPresentations);
+                context.AddRange(Sessions);
 
+                var PresentationSessions = new[]
+                {
+                    new PresentationSession()
+                    {
+                        Presentation=Presentations[0],
+                        Sessions=Sessions[0]
+                    },
+                    new PresentationSession()
+                    {
+                        Presentation=Presentations[0],
+                        Sessions=Sessions[1]
+                    },
+                    new PresentationSession()
+                    {
+                        Presentation=Presentations[1],
+                        Sessions=Sessions[0]
+                    },
+                    new PresentationSession()
+                    {
+                        Presentation=Presentations[1],
+                        Sessions=Sessions[1]
+                    },
+
+                };
+                context.AddRange(PresentationSessions);
+
+                var ClassPresentationSession = new[]
+                {
+                    new ClassPresentationsession()
+                    {
+                        Class=Classes[0],
+                        Presentation=Presentations[0],
+                        Sessions=Sessions[0],
+                        CurrentCapacity=0
+                    },
+                    new ClassPresentationsession()
+                    {
+                        Class=Classes[0],
+                        Presentation=Presentations[1],
+                        Sessions=Sessions[1],
+                        CurrentCapacity=0
+
+                    },
+                    new ClassPresentationsession()
+                    {
+                        Class=Classes[1],
+                        Presentation=Presentations[0],
+                        Sessions=Sessions[1],
+                        CurrentCapacity=0
+                    },
+                    new ClassPresentationsession()
+                    {
+                        Class=Classes[1],
+                        Presentation=Presentations[1],
+                        Sessions=Sessions[0],
+                        CurrentCapacity=0
+                    },
+                };
+
+                context.AddRange(ClassPresentationSession);
+
+                var StudentPresentationSessions = new[]
+                {
+                    new StudentPresentationsession()
+                    {
+                        Student=Students[0],
+                        Presentation=Presentations[0],
+                        Sessions=Sessions[0]
+                    }
+                };
+                context.AddRange(StudentPresentationSessions);
                 context.SaveChanges();
             }
         }
     }
-
 }
