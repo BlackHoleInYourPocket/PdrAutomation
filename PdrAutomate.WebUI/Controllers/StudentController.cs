@@ -96,5 +96,11 @@ namespace PdrAutomate.WebUI.Controllers
                 return "Silme işlemi başarısız";
             }
         }
+        public IActionResult Settings()
+        {
+
+            return View();
+
+        }
     }
 }

@@ -1,21 +1,51 @@
 ﻿@model ClassPresentationsession
 @{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Details";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
-<p>Presentation Name : @Model.Presentation.PresentationName</p>
-<p>Toplam Kapasite : @Model.Class.ClassCapacity</p>
-<p>Kayıtlı Öğrenci Sayısı : @Model.CurrentCapacity</p>
-<p>Sınıf : @Model.Class.ClassName</p>
-<p>Section :  @Model.Sessions.StartTime <text> - </text> @Model.Sessions.EndTime</p>
-<button class="btn-block"
-        onclick="addStudent(@Model.Presentation.PresentationId,
+}
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/js/bootstrap.min.js"></script>
+<script src="~/js/jquery-3.2.1.min.js"></script>
+
+<div class="main-content  py-4 mb-5">
+	<div class="container">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<h4>Sunum Detayları</h4>
+					<hr>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12">
+			<label>Sunumun Adı : @Model.Presentation.PresentationName</label>
+			<div class="row mb-3"></div>
+			<label>Sunumun Toplam Kapasitesi : @Model.Class.ClassCapacity</label>
+			<div class="row mb-3"></div>
+			<label>Kayıtlı Öğrenci Sayısı : @Model.CurrentCapacity</label>
+			<div class="row mb-3"></div>
+			<label>Sunumun Yapılacağı Sınıf : @Model.Class.ClassName</label>
+			<div class="row mb-3"></div>
+			<label>Sunum Tarihi :  @Model.Sessions.StartTime <text> - </text> @Model.Sessions.EndTime</label>
+			<div class="row mb-5"></div>
+		</div>
+		<div class="row col-md-12">
+
+			<div class="col-sm-5">
+				<button class="btn btn-primary"
+						onclick="addStudent(@Model.Presentation.PresentationId,
                             @User.Identity.Name,
                             @Model.SessionId)">
-    Katıl
-</button>
+					Sunuma Katıl
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
 
 <script>
     function addStudent(presentationId, studentSchoolId, sessionId) {
