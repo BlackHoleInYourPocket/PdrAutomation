@@ -1,0 +1,54 @@
+﻿
+@{
+	ViewData["Title"] = "Settings";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/js/bootstrap.min.js"></script>
+<script src="~/js/jquery-3.2.1.min.js"></script>
+
+<div class="main-content  py-5 mb-5">
+	<div class="container">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<h4>Ayarlar</h4>
+					<hr>
+				</div>
+			</div>
+		</div>
+		<div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="col-sm-4">
+				<label>Mevcut Şifre</label>
+				<div class="form-group pass_show">
+					<input type="password" class="form-control" placeholder="Mevcut Şifrenizi Giriniz.">
+				</div>
+				<label>Yeni Şifre</label>
+				<div class="form-group pass_show">
+					<input type="password" class="form-control" placeholder="Yeni Şifrenizi Giriniz.">
+				</div>
+			</div>
+		</div>
+		<div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="col-sm-4">
+				<button type="button" class="btn btn-primary">Değişiklikleri Kaydet</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+@*<script>
+	$(document).ready(function(){
+	$('.pass_show').append('<span class="ptxt">Show</span>');
+	});
+
+
+	$(document).on('click','.pass_show .ptxt', function(){
+
+	$(this).text($(this).text() == "Show" ? "Hide" : "Show");
+
+	$(this).prev().attr('type', function(index, attr){return attr == 'password' ? 'text' : 'password'; });
+
+	})</script>*@

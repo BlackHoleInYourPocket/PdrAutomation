@@ -12,7 +12,7 @@
     <div class="main-content  py-5 mb-5">
         <div class="container">
             <div class="card-body">
-                <div class="row">
+                <div class="row mb-3">
                     <div class="col-md-12">
                         <h3>Sunumlar</h3>
                         <hr>
@@ -20,12 +20,13 @@
                 </div>
             </div>
             <div>
-                <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="row mb-3 col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="col-md-12">
-                        <div class="row">
+                        <div class="row mb-3">
                             @foreach (var item in Model)
                             {
                                 <div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
+                                    <div class="row mb-4"></div>
                                     <div class="list-group-item">
                                         <div class="row">
                                             <div class="col-md-6" align="right">
@@ -63,6 +64,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                             }
                         </div>
                     </div>

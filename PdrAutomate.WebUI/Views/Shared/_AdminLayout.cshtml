@@ -2,8 +2,9 @@
 @{
     Layout = null;
 }
-
-<!DOCTYPE html>
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/js/bootstrap.min.js"></script>
+<script src="~/js/jquery-3.2.1.min.js"></script>
 
 <html>
 <head>
@@ -11,6 +12,59 @@
     <title>_AdminLayout</title>
 </head>
 <body>
+    <nav class="navbar navbar-expand-xl navbar-light bg-light max-h-full p-b-199 lnr-line-spacing">
+        <div class="col-md-1"></div>
+        <a class="navbar-brand">Öğretmen Sistemi</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown col-md-3">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Sunumlar
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a asp-controller="Teacher"
+                           asp-action="Session" class="dropdown-item">Oturum ve Sınıf Ekle</a>
+                        <a asp-controller="Teacher"
+                           asp-action="Presentation" class="dropdown-item">Sunum Ekle</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown col-md-3">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Anketler
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item">Sunum Anketi Ekle</a>
+                        <a class="dropdown-item" href="#">Kişisel Anket Ekle</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown col-md-3">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Öğrenciler
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Sunuma Katılan Öğrencileri Göster</a>
+                        <a class="dropdown-item" href="#">Sunum Anket Sonuçlarını Göster</a>
+                        <a class="dropdown-item" href="#">Kişisel Anket Sonuçlarını Göster</a>
+                    </div>
+                </li>
+                <li class="nav-item col-md-6">
+                    <a asp-controller="Teacher"
+                       asp-action="Settings" class="nav-link">Ayarlar</a>
+                </li>
+                <li class="nav-item col-sm-3">
+                    <a class="nav-link" href="#">@User.Identity.Name</a>
+                </li>
+                <li class="nav-item col-md-3">
+                    <a asp-controller="Account"
+                       asp-action="Logout"
+                       asp-route-name="@User.Identity.Name" class="nav-link">Çıkış Yap</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
     <section>
         @RenderBody()
     </section>
