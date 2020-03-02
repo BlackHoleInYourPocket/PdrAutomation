@@ -35,14 +35,27 @@ namespace PdrAutomate.WebUI.Controllers
         public async Task<IActionResult> Login(LoginModel model,string returnUrl)
         {
             var user = await userManager.FindByNameAsync(model.StudentSchoolId);
+            var role = await userManager.GetRolesAsync(user);
+
             if (user != null)
             {
-                await signInManager.SignOutAsync();
-                var result = await signInManager.PasswordSignInAsync(user, model.Password,false,false);
-
-                if (result.Succeeded)
+                if (role.FirstOrDefault() == "admin")
                 {
-                    return Redirect(returnUrl ?? "Presentations/Index");
+                    await signInManager.SignOutAsync();
+                    var result = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
+                    if (result.Succeeded)
+                    {
+                        return Redirect(returnUrl ?? "Presentations/Index");
+                    }
+                }
+                else if(role.FirstOrDefault() == "teacher")
+                {
+                    await signInManager.SignOutAsync();
+                    var result = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
+                    if (result.Succeeded)
+                    {
+                        return Redirect(returnUrl ?? "Teacher/Index");
+                    }
                 }
             }
             ModelState.AddModelError(nameof(model.StudentSchoolId), "Hatalı okul numarası");

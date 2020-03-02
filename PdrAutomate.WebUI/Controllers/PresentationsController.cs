@@ -20,7 +20,6 @@ namespace PdrAutomate.WebUI.Controllers
         }
         public IActionResult Index()
         {
-
             List<Presentation> returnList = new List<Presentation>();
             var presentations = uow.PresentationDataAccess.GetAll().ToList();
             foreach (var presentation in presentations)
@@ -42,10 +41,8 @@ namespace PdrAutomate.WebUI.Controllers
                                         })
                                         .FirstOrDefault();
                 }
-
                 returnList.Add(presentation);
             }
-
             return View(returnList);
         }
 
@@ -59,6 +56,19 @@ namespace PdrAutomate.WebUI.Controllers
             classInfo.Presentation = uow.PresentationDataAccess.GetAll().Where(i => i.PresentationId == classInfo.PresentationId).FirstOrDefault();
             classInfo.Sessions = uow.SessionsDataAccess.GetAll().Where(i => i.SessionId == classInfo.SessionId).FirstOrDefault();
             return View(classInfo);
+        }
+        public bool CheckDetails(int presentationId, int sessionId)
+        {
+            var classInfo = uow.ClassPresentationsession.GetAll()
+                .Where(i => i.PresentationId == presentationId)
+                .Where(i => i.SessionId == sessionId)
+                .FirstOrDefault();
+            classInfo.Class = uow.ClassDataAccess.GetAll().Where(i => i.ClassId == classInfo.ClassId).FirstOrDefault();
+            if(classInfo.CurrentCapacity == classInfo.Class.ClassCapacity)
+            {
+                return false;
+            }      
+            return true;
         }
         public string AddStudent(int presentationId, string studentSchoolId, int sessionId)
         {
