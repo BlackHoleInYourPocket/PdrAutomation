@@ -57,8 +57,15 @@
 		</div>
 		<div class="row mb-3"></div>
 		<div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
-			<div class="col-sm-4">
+			<div class="col-sm-2">
 				<button type="button" onclick="addPresentation()" class="btn btn-primary">Ekle</button>
+			</div>
+			<div class="col-sm-4">
+				<button type="button" class="btn btn-primary">
+					<a asp-controller="Teacher" asp-action="PresentationList" style="color:white">
+						Görüntüle
+					</a>
+				</button>
 			</div>
 		</div>
 	</div>
@@ -78,7 +85,7 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (response) {
                     alert(response);
-                    window.location.href = "/Teacher/Session"
+                     window.location.reload()
                 },
             });
 	}

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PdrAutomate.WebUI.DataAccess.Abstract;
 using PdrAutomate.WebUI.Entity;
 using PdrAutomate.WebUI.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PdrAutomate.WebUI.Controllers
 {
@@ -60,17 +59,13 @@ namespace PdrAutomate.WebUI.Controllers
             return "Oturum eklendi";
         }
 
-        public string DeleteSession(DateTime startTime, DateTime endTime)
+        public string DeleteSession(int id)
         {
-            if (startTime == DateTime.MinValue || endTime == DateTime.MinValue)
-            {
-                return "Lütfen tüm boşlukları doldurun";
-            }
             try
             {
                 var isSessionAvaliable = uow.SessionsDataAccess
                     .GetAll()
-                    .Where(i => i.StartTime == startTime && i.EndTime == endTime)
+                    .Where(i => i.SessionId == id)
                     .FirstOrDefault();
 
                 if (isSessionAvaliable == null) return "Böyle bir oturum bulunamadı";
@@ -117,15 +112,13 @@ namespace PdrAutomate.WebUI.Controllers
             return "Sınıf eklendi";
         }
 
-        public string DeleteClassroom(string classNumber, string classWord)
+        public string DeleteClassroom(int id)
         {
-
             try
             {
-                var className = String.Concat(classNumber, classWord);
                 var classInfo = uow.ClassDataAccess
                 .GetAll()
-                .Where(i => i.ClassName == className)
+                .Where(i => i.ClassId == id)
                 .FirstOrDefault();
                 if (classInfo == null) return "Böyle bir sınıf bulunamadı";
 
@@ -140,6 +133,20 @@ namespace PdrAutomate.WebUI.Controllers
             return "Sınıf silindi";
         }
 
+        public string DeleteStudent(int id)
+        {
+            try
+            {
+                uow.StudentDataAccess.Delete(new Student() { StudentId = id });
+                uow.SaveChanges();
+                return "Silindi";
+            }
+            catch (Exception)
+            {
+                return "Silinemedi";
+            }
+
+        }
         public IActionResult Presentation()
         {
             ClassSession returnModel = new ClassSession();
@@ -264,7 +271,7 @@ namespace PdrAutomate.WebUI.Controllers
                     .GetAll()
                     .Where(i => i.PresentationId == pr.PresentationId)
                     .ToList();
-                foreach(var _sps in sps)
+                foreach (var _sps in sps)
                 {
                     _sps.Sessions = uow.SessionsDataAccess
                         .GetAll()
@@ -280,7 +287,7 @@ namespace PdrAutomate.WebUI.Controllers
                         .Where(i => i.PresentationId == pr.PresentationId)
                         .ToList();
 
-                foreach(var classes in pr.ClassPresentationsessions)
+                foreach (var classes in pr.ClassPresentationsessions)
                 {
                     classes.Class = uow.ClassDataAccess
                         .GetAll()
@@ -291,5 +298,80 @@ namespace PdrAutomate.WebUI.Controllers
 
             return View(allPresentation);
         }
+
+        public IActionResult SessionList()
+        {
+            return View(uow.SessionsDataAccess.GetAll().ToList());
+        }
+
+        public IActionResult ClassList()
+        {
+            var classes = uow.ClassDataAccess.GetAll().ToList();
+            foreach (var _class in classes)
+            {
+                _class.Students = uow.StudentDataAccess
+                    .GetAll()
+                    .Where(i => i.ClassId == _class.ClassId)
+                    .ToList();
+            }
+            return View(classes);
+        }
+
+        public string DeletePresentation(int pid, int sid)
+        {
+            try
+            {
+                uow.PresentationSession.Delete(new PresentationSession() { PresentationID = pid, SessionId = sid });
+                uow.SaveChanges();
+                return "Silindi";
+            }
+            catch (Exception)
+            {
+                return "Silinemedi";
+            }
+        }
+
+        public IActionResult PresentationList()
+        {
+            List<Presentation> returnList = new List<Presentation>();
+            var presentations = uow.PresentationDataAccess.GetAll().ToList();
+            foreach (var presentation in presentations)
+            {
+                presentation.Sessions = uow.PresentationSession
+                .GetAll()
+                .Where(i => i.PresentationID == presentation.PresentationId)
+                .ToList();
+
+                foreach (var session in presentation.Sessions)
+                {
+                    session.Sessions = uow.SessionsDataAccess
+                                        .GetAll()
+                                        .Where(i => i.SessionId == session.SessionId)
+                                        .Select(i => new Sessions()
+                                        {
+                                            StartTime = i.StartTime,
+                                            EndTime = i.EndTime
+                                        })
+                                        .FirstOrDefault();
+                }
+
+                presentation.ClassPresentationsessions = uow.ClassPresentationsession
+                    .GetAll()
+                    .Where(i => i.PresentationId == presentation.PresentationId)
+                    .ToList();
+
+                foreach (var classes in presentation.ClassPresentationsessions)
+                {
+                    classes.Class = uow.ClassDataAccess
+                        .GetAll()
+                        .Where(i => i.ClassId == classes.ClassId)
+                        .FirstOrDefault();
+                }
+
+                returnList.Add(presentation);
+            }
+            return View(returnList);
+        }
+
     }
 }

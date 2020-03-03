@@ -45,15 +45,15 @@
                                                 <div class="row mb-3">
                                                     @if (item.ClassPresentationsessions.Count != 0 && item.ClassPresentationsessions != null)
                                                     {
-                                                        @if (@item.ClassPresentationsessions.Find(i => i.SessionId == sessions.SessionId).Class.ClassName != null)
+                                                        @if (@item.ClassPresentationsessions.Find(i => i.SessionId == sessions.SessionId) == null)
+                                                        {
+                                                            <text> Sınıf Atanmamış</text>
+                                                        }
+                                                        else 
                                                         {
                                                             <text> Sınıf:</text>
                                                             @item.ClassPresentationsessions.Find(i => i.SessionId == sessions.SessionId).Class.ClassName
                                                         }
-                                                    }
-                                                    else
-                                                    {
-                                                        <text> Sınıf Atanmamış</text>
                                                     }
                                                 </div>
                                                 <div class="row mb-3">

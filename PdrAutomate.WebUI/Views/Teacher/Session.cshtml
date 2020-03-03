@@ -77,13 +77,24 @@
 				<button type="button" onclick="addSession()" class="btn btn-primary">Ekle</button>
 			</div>
 			<div class="col-sm-5">
-				<button type="button" onclick="deleteSession()" class="btn btn-primary">Sil</button>
+				<button type="button" class="btn btn-primary">
+					<a asp-controller="Teacher" asp-action="SessionList" style="color:white">
+						Görüntüle
+					</a>
+				</button>
+
 			</div>
 			<div class="col-sm-1">
 				<button type="button" onclick="addClass()" class="btn btn-primary">Ekle</button>
 			</div>
 			<div class="col-sm-2">
-				<button type="button" onclick="deleteClass()" class="btn btn-primary">Sil</button>
+				
+					<button type="button" class="btn btn-primary">
+						<a asp-controller="Teacher" asp-action="ClassList" style="color:white">
+							Görüntüle
+						</a>
+					</button>
+
 			</div>
 		</div>
 	</div>
@@ -102,24 +113,7 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (response) {
                     alert(response);
-                    window.location.href = "/Teacher/Session"
-                },
-            });
-    }
-
-	function deleteSession()
-    {
-    var startTime = document.getElementById('startTime').value;
-    var endTime = document.getElementById('endTime').value;
-        $.ajax({
-                type: "POST",
-                url: "/Teacher/DeleteSession?startTime=" + startTime +
-                    "&endTime=" + endTime,
-                data: null,
-                contentType: "application/json; charset=utf-8",
-                success: function (response) {
-                    alert(response);
-                    window.location.href = "/Teacher/Session"
+                     window.location.reload()
                 },
             });
     }
@@ -138,24 +132,7 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (response) {
                     alert(response);
-                    window.location.href = "/Teacher/Session"
-                },
-            });
-    }
-
-	function deleteClass()
-    {
-		var classNumber = document.getElementById('classNumber').value;
-		var classWord = document.getElementById('classWord').value;
-        $.ajax({
-                type: "POST",
-                url: "/Teacher/DeleteClassroom?classNumber=" + classNumber 
-					+ "&classWord=" + classWord,         
-                data: null,
-                contentType: "application/json; charset=utf-8",
-                success: function (response) {
-                    alert(response);
-                    window.location.href = "/Teacher/Session"
+                     window.location.reload()
                 },
             });
     }
