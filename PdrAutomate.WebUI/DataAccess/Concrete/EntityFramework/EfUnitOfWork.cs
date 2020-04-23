@@ -20,6 +20,11 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
         private ISessionsDataAccess _SessionsDataAccess;
         private IStudentDataAccess _StudentDataAccess;
         private IStudentPresentationsessionDataAccess _studentPresentationsessionDataAccess;
+        private IAnswerDataAccess _AnswerDataAccess;
+        private IQuestionnarieDataAccess _QuestionnarieDataAccess;
+        private IQuestionsDataAccess _QuestionsDataAccess;
+        private IStudentQuestionnarieQuestionAnswerDataAccess _StudentQuestionnarieQuestionAnswerDataAccess;
+
 
         public IClassDataAccess ClassDataAccess
         {
@@ -69,6 +74,40 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
             get
             {
                 return _studentPresentationsessionDataAccess ?? (_studentPresentationsessionDataAccess = new EfStudentPresentationsession(dbContext));
+            }
+        }
+
+
+        public IAnswerDataAccess AnswerDataAccess
+        {
+            get
+            {
+                return _AnswerDataAccess ?? (_AnswerDataAccess = new EfAnswerDataAccess(dbContext));
+
+            }
+        }
+        public IQuestionnarieDataAccess QuestionnarieDataAccess
+        {
+            get
+            {
+                return _QuestionnarieDataAccess ?? (_QuestionnarieDataAccess = new EfQuestionnarieDataAccess(dbContext));
+
+            }
+        }
+        public IQuestionsDataAccess QuestionsDataAccess
+        {
+            get
+            {
+                return _QuestionsDataAccess ?? (_QuestionsDataAccess = new EfQuestionsDataAccess(dbContext));
+
+            }
+        }
+        public IStudentQuestionnarieQuestionAnswerDataAccess StudentQuestionnarieQuestionAnswerDataAccess
+        {
+            get
+            {
+                return _StudentQuestionnarieQuestionAnswerDataAccess ?? (_StudentQuestionnarieQuestionAnswerDataAccess = new EfStudentQuestionnarieQuestionAnswerDataAccess(dbContext));
+
             }
         }
         public void Dispose()

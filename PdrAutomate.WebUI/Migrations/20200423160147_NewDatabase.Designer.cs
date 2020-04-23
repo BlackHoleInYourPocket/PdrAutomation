@@ -10,7 +10,7 @@ using PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework;
 namespace PdrAutomate.WebUI.Migrations
 {
     [DbContext(typeof(PdrAutomateContext))]
-    [Migration("20200227180800_NewDatabase")]
+    [Migration("20200423160147_NewDatabase")]
     partial class NewDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,19 @@ namespace PdrAutomate.WebUI.Migrations
                 .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("PdrAutomate.WebUI.Entity.Answer", b =>
+                {
+                    b.Property<int>("AnswerId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AnswerName");
+
+                    b.HasKey("AnswerId");
+
+                    b.ToTable("Answers");
+                });
 
             modelBuilder.Entity("PdrAutomate.WebUI.Entity.Class", b =>
                 {
@@ -40,13 +53,17 @@ namespace PdrAutomate.WebUI.Migrations
                 {
                     b.Property<int>("ClassId");
 
-                    b.Property<int>("PresentationsessionId");
+                    b.Property<int>("PresentationId");
+
+                    b.Property<int>("SessionId");
 
                     b.Property<int>("CurrentCapacity");
 
-                    b.HasKey("ClassId", "PresentationsessionId");
+                    b.HasKey("ClassId", "PresentationId", "SessionId");
 
-                    b.HasIndex("PresentationsessionId");
+                    b.HasIndex("PresentationId");
+
+                    b.HasIndex("SessionId");
 
                     b.ToTable("ClassPresentationsessions");
                 });
@@ -66,21 +83,49 @@ namespace PdrAutomate.WebUI.Migrations
 
             modelBuilder.Entity("PdrAutomate.WebUI.Entity.PresentationSession", b =>
                 {
-                    b.Property<int>("PresentationSessionId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
                     b.Property<int>("PresentationID");
 
                     b.Property<int>("SessionId");
 
-                    b.HasKey("PresentationSessionId");
-
-                    b.HasIndex("PresentationID");
+                    b.HasKey("PresentationID", "SessionId");
 
                     b.HasIndex("SessionId");
 
                     b.ToTable("PresentationSessions");
+                });
+
+            modelBuilder.Entity("PdrAutomate.WebUI.Entity.Question", b =>
+                {
+                    b.Property<int>("QuestionId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("IsCheckbox");
+
+                    b.Property<string>("QuestionName");
+
+                    b.Property<int?>("QuestionnarieId");
+
+                    b.HasKey("QuestionId");
+
+                    b.HasIndex("QuestionnarieId");
+
+                    b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("PdrAutomate.WebUI.Entity.Questionnarie", b =>
+                {
+                    b.Property<int>("QuestionnarieId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("IsSentiment");
+
+                    b.Property<string>("QuestionnarieName");
+
+                    b.HasKey("QuestionnarieId");
+
+                    b.ToTable("Questionnaries");
                 });
 
             modelBuilder.Entity("PdrAutomate.WebUI.Entity.Sessions", b =>
@@ -91,13 +136,9 @@ namespace PdrAutomate.WebUI.Migrations
 
                     b.Property<DateTime>("EndTime");
 
-                    b.Property<int?>("PresentationId");
-
                     b.Property<DateTime>("StartTime");
 
                     b.HasKey("SessionId");
-
-                    b.HasIndex("PresentationId");
 
                     b.ToTable("Sessions");
                 });
@@ -129,13 +170,40 @@ namespace PdrAutomate.WebUI.Migrations
                 {
                     b.Property<int>("StudentId");
 
-                    b.Property<int>("PresentationSessionId");
+                    b.Property<int>("PresentationId");
 
-                    b.HasKey("StudentId", "PresentationSessionId");
+                    b.Property<int>("SessionId");
 
-                    b.HasIndex("PresentationSessionId");
+                    b.HasKey("StudentId", "PresentationId", "SessionId");
+
+                    b.HasIndex("PresentationId");
+
+                    b.HasIndex("SessionId");
 
                     b.ToTable("StudentPresentationsessions");
+                });
+
+            modelBuilder.Entity("PdrAutomate.WebUI.Entity.StudentQuestionnarieQuestionAnswer", b =>
+                {
+                    b.Property<int>("StudentId");
+
+                    b.Property<int>("QuestionnarieId");
+
+                    b.Property<int>("AnswerId");
+
+                    b.Property<int>("QuestionId");
+
+                    b.HasKey("StudentId", "QuestionnarieId", "AnswerId", "QuestionId");
+
+                    b.HasIndex("AnswerId")
+                        .IsUnique();
+
+                    b.HasIndex("QuestionId")
+                        .IsUnique();
+
+                    b.HasIndex("QuestionnarieId");
+
+                    b.ToTable("StudentQuestionnarieQuestionAnswers");
                 });
 
             modelBuilder.Entity("PdrAutomate.WebUI.Entity.ClassPresentationsession", b =>
@@ -145,16 +213,21 @@ namespace PdrAutomate.WebUI.Migrations
                         .HasForeignKey("ClassId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("PdrAutomate.WebUI.Entity.PresentationSession", "PresentationSession")
+                    b.HasOne("PdrAutomate.WebUI.Entity.Presentation", "Presentation")
                         .WithMany("ClassPresentationsessions")
-                        .HasForeignKey("PresentationsessionId")
+                        .HasForeignKey("PresentationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("PdrAutomate.WebUI.Entity.Sessions", "Sessions")
+                        .WithMany("ClassPresentationsessions")
+                        .HasForeignKey("SessionId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("PdrAutomate.WebUI.Entity.PresentationSession", b =>
                 {
                     b.HasOne("PdrAutomate.WebUI.Entity.Presentation", "Presentation")
-                        .WithMany()
+                        .WithMany("Sessions")
                         .HasForeignKey("PresentationID")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -164,11 +237,11 @@ namespace PdrAutomate.WebUI.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("PdrAutomate.WebUI.Entity.Sessions", b =>
+            modelBuilder.Entity("PdrAutomate.WebUI.Entity.Question", b =>
                 {
-                    b.HasOne("PdrAutomate.WebUI.Entity.Presentation")
-                        .WithMany("Sessions")
-                        .HasForeignKey("PresentationId");
+                    b.HasOne("PdrAutomate.WebUI.Entity.Questionnarie")
+                        .WithMany("Questions")
+                        .HasForeignKey("QuestionnarieId");
                 });
 
             modelBuilder.Entity("PdrAutomate.WebUI.Entity.Student", b =>
@@ -181,13 +254,41 @@ namespace PdrAutomate.WebUI.Migrations
 
             modelBuilder.Entity("PdrAutomate.WebUI.Entity.StudentPresentationsession", b =>
                 {
-                    b.HasOne("PdrAutomate.WebUI.Entity.PresentationSession", "PresentationSession")
+                    b.HasOne("PdrAutomate.WebUI.Entity.Presentation", "Presentation")
                         .WithMany("StudentPresentationsessions")
-                        .HasForeignKey("PresentationSessionId")
+                        .HasForeignKey("PresentationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("PdrAutomate.WebUI.Entity.Sessions", "Sessions")
+                        .WithMany("StudentPresentationsessions")
+                        .HasForeignKey("SessionId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("PdrAutomate.WebUI.Entity.Student", "Student")
                         .WithMany("StudentPresentationsessions")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("PdrAutomate.WebUI.Entity.StudentQuestionnarieQuestionAnswer", b =>
+                {
+                    b.HasOne("PdrAutomate.WebUI.Entity.Answer", "Answer")
+                        .WithOne("StudentQuestionnarieQuestionAnswers")
+                        .HasForeignKey("PdrAutomate.WebUI.Entity.StudentQuestionnarieQuestionAnswer", "AnswerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("PdrAutomate.WebUI.Entity.Question", "Question")
+                        .WithOne("StudentQuestionnarieQuestionAnswers")
+                        .HasForeignKey("PdrAutomate.WebUI.Entity.StudentQuestionnarieQuestionAnswer", "QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("PdrAutomate.WebUI.Entity.Questionnarie", "Questionnarie")
+                        .WithMany("StudentQuestionnarieQuestionAnswers")
+                        .HasForeignKey("QuestionnarieId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("PdrAutomate.WebUI.Entity.Student", "Student")
+                        .WithMany("StudentQuestionnarieQuestionAnswers")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
