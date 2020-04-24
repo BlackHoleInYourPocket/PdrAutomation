@@ -1,0 +1,12 @@
+﻿@model List<Question> 
+@{
+    ViewData["Title"] = "PresentationQuestionnarie";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>PresentationQuestionnarie</h1>
+
+@foreach(var q in Model)
+{
+    <p>@q.QuestionName</p><br />
+}

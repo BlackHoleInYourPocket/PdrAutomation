@@ -16,5 +16,6 @@ namespace PdrAutomate.WebUI.Entity
         public Class Class { get; set; }
         public List<StudentPresentationsession> StudentPresentationsessions { get; set; }
         public List<StudentQuestionnarieQuestionAnswer> StudentQuestionnarieQuestionAnswers { get; set; }
+        public List<StudentPresentationQuestionnarieSession> StudentPresentationQuestionnaries { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PdrAutomate.WebUI.DataAccess.Abstract;
 using PdrAutomate.WebUI.Entity;
 using PdrAutomate.WebUI.Models;
@@ -8,6 +9,7 @@ using System.Linq;
 
 namespace PdrAutomate.WebUI.Controllers
 {
+    [Authorize]
     public class TeacherController : Controller
     {
         IUnitOfWork uow;

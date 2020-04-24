@@ -29,8 +29,11 @@
 						Anketler
 					</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-						<a class="dropdown-item" href="#">Sunum Anketleri</a>
-						<a class="dropdown-item" href="#">Kişisel Anketler</a>
+						<a asp-controller="Questionnarie"
+						   asp-action="PresentationQuestionnarieIndex"
+						   asp-route-studentSchoolId="@User.Identity.Name" class="dropdown-item">Sunum Anketleri</a>
+						<a asp-controller="Questionnarie"
+						   asp-action="PersonalQuestionnarieIndex" class="dropdown-item">Kişisel Anketler</a>
 					</div>
 				</li>
 				<li class="nav-item col-md-12">

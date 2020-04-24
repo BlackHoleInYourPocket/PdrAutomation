@@ -24,8 +24,8 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
         private IQuestionnarieDataAccess _QuestionnarieDataAccess;
         private IQuestionsDataAccess _QuestionsDataAccess;
         private IStudentQuestionnarieQuestionAnswerDataAccess _StudentQuestionnarieQuestionAnswerDataAccess;
-
-
+        private IStudentPresentationQuestionnarieSessionDataAccess _StudentPresentationQuestionnarieSessionDataAccess;
+        private IQuestionnarieQuestionDataAccess _QuestionnarieQuestionDataAccess;
         public IClassDataAccess ClassDataAccess
         {
             get
@@ -107,6 +107,24 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
             get
             {
                 return _StudentQuestionnarieQuestionAnswerDataAccess ?? (_StudentQuestionnarieQuestionAnswerDataAccess = new EfStudentQuestionnarieQuestionAnswerDataAccess(dbContext));
+
+            }
+        }
+
+        public IStudentPresentationQuestionnarieSessionDataAccess StudentPresentationQuestionnarieSessionDataAccess
+        {
+            get
+            {
+                return _StudentPresentationQuestionnarieSessionDataAccess ?? (_StudentPresentationQuestionnarieSessionDataAccess = new EfStudentPresentationQuestionnarieSessionDataAccess(dbContext));
+
+            }
+        }
+
+        public IQuestionnarieQuestionDataAccess QuestionnarieQuestionDataAccess
+        {
+            get
+            {
+                return _QuestionnarieQuestionDataAccess ?? (_QuestionnarieQuestionDataAccess = new EfQuestionnarieQuestionDataAccess(dbContext));
 
             }
         }

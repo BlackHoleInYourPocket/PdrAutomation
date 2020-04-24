@@ -1,0 +1,106 @@
+﻿
+@{
+	ViewData["Title"] = "PersonalQuestionnarieIndex";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/js/bootstrap.min.js"></script>
+<script src="~/js/jquery-3.2.1.min.js"></script>
+
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+<section>
+	<div class="main-content  py-5 mb-5">
+		<div class="container">
+			<div class="card-body">
+				<div class="row mb-3">
+					<div class="col-md-12">
+						<h3>Sunumlar</h3>
+						<hr>
+					</div>
+				</div>
+			</div>
+			<div>
+				<div class="row mb-3 col-xs-12 col-sm-12 col-md-12 col-lg-12">
+					<div class="col-md-12">
+						<div class="row mb-3">
+							@foreach (var item in Model)
+							{
+								<div class="gallery_product col-lg-4 col-md-4 col-sm-4 col-xs-6 filter hdpe">
+									<div class="row mb-4"></div>
+									<div class="list-group-item">
+										<div class="row">
+											<div class="col-md-6" align="right">
+												@item.PresentationName
+											</div>
+											<div class="toggle" id="dropdown-detail-@item.PresentationId.ToString()" data-toggle="detail-@item.PresentationId.ToString()">
+												<i class="fa fa-chevron-down pull-right"></i>
+											</div>
+										</div>
+										<div id="detail-@item.PresentationId.ToString()">
+											<hr />
+											<div class="container">
+												@foreach (var sessions in item.Sessions)
+												{
+													<div class="fluid-row">
+														<div class="col-xs-1">
+															<div class="row mb-3">
+																Başlangıç : @sessions.Sessions.StartTime
+															</div>
+
+															<div class="row mb-3">
+																Bitiş : @sessions.Sessions.EndTime
+															</div>
+															<div class="row">
+																<button class="btn btn-primary"
+																		onclick="showDetails(@sessions.PresentationID,@sessions.SessionId)">
+																	Detaylar
+																</button>
+															</div>
+														</div>
+													</div>
+													<hr />
+												}
+											</div>
+										</div>
+									</div>
+								</div>
+
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script>
+	$(document).ready(function () {
+		$('[id^=detail-]').hide();
+		$('.toggle').click(function () {
+			$input = $(this);
+			$target = $('#' + $input.attr('data-toggle'));
+			$target.slideToggle();
+		});
+	});
+
+	function showDetails(presentationId, sessionId) {
+
+		$.ajax({
+			type: "POST",
+			url: "/Presentations/CheckDetails?presentationId=" + presentationId +
+				"&sessionId=" + sessionId,
+			data: null,
+			contentType: "application/json; charset=utf-8",
+			success: function (response) {
+				if (response) {
+					window.location.href = "/Presentations/Details?presentationId=" + presentationId +
+						"&sessionId=" + sessionId;
+				}
+				else {
+					alert("Sınıf kapasitesi dolu.");
+				}
+			}
+		});
+	}
+</script>
+

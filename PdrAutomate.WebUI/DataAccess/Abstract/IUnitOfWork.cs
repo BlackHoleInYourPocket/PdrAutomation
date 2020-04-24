@@ -18,6 +18,8 @@ namespace PdrAutomate.WebUI.DataAccess.Abstract
         IQuestionnarieDataAccess QuestionnarieDataAccess { get; }
         IQuestionsDataAccess QuestionsDataAccess { get; }
         IStudentQuestionnarieQuestionAnswerDataAccess StudentQuestionnarieQuestionAnswerDataAccess { get; } 
+        IStudentPresentationQuestionnarieSessionDataAccess StudentPresentationQuestionnarieSessionDataAccess { get;  }
+        IQuestionnarieQuestionDataAccess QuestionnarieQuestionDataAccess { get; }
         int SaveChanges();
     }
 }

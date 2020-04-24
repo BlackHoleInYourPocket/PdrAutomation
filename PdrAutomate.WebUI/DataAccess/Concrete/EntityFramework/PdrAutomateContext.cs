@@ -24,7 +24,9 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
 		public DbSet<Answer> Answers { get; set; }
 		public DbSet<Question> Questions { get; set; }
 		public DbSet<Questionnarie> Questionnaries { get; set; }
-		public DbSet<StudentQuestionnarieQuestionAnswer>  StudentQuestionnarieQuestionAnswers { get; set; }
+		public DbSet<StudentQuestionnarieQuestionAnswer> StudentQuestionnarieQuestionAnswers { get; set; }
+		public DbSet<StudentPresentationQuestionnarieSession> StudentPresentationQuestionnarieSessions { get; set; }
+		public DbSet<QuestionnarieQuestion> QuestionnarieQuestions { get; set; }
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<Sessions>()
@@ -40,9 +42,13 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
 			modelBuilder.Entity<Answer>()
 				.HasKey(pk => new { pk.AnswerId });
 			modelBuilder.Entity<Questionnarie>()
-				.HasMany(c => c.Questions);
+				.HasKey(c => c.QuestionnarieId);
 			modelBuilder.Entity<StudentQuestionnarieQuestionAnswer>()
-				 .HasKey(pk => new { pk.StudentId,pk.QuestionnarieId,pk.AnswerId,pk.QuestionId});
+				.HasKey(pk => new { pk.StudentId, pk.QuestionnarieId, pk.AnswerId, pk.QuestionId });
+			modelBuilder.Entity<StudentPresentationQuestionnarieSession>()
+				.HasKey(pk => new { pk.StudentId, pk.PresentationId, pk.QuestionnarieId, pk.SessionId });
+			modelBuilder.Entity<QuestionnarieQuestion>()
+				.HasKey(pk => new { pk.QuestionnarieId, pk.QuestionId });
 		}
 	}
 }

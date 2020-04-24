@@ -63,6 +63,20 @@ namespace PdrAutomate.WebUI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Questions",
+                columns: table => new
+                {
+                    QuestionId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    QuestionName = table.Column<string>(nullable: true),
+                    IsCheckbox = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Questions", x => x.QuestionId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Sessions",
                 columns: table => new
                 {
@@ -100,24 +114,27 @@ namespace PdrAutomate.WebUI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Questions",
+                name: "QuestionnarieQuestions",
                 columns: table => new
                 {
+                    QuestionnarieId = table.Column<int>(nullable: false),
                     QuestionId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    QuestionName = table.Column<string>(nullable: true),
-                    IsCheckbox = table.Column<bool>(nullable: false),
-                    QuestionnarieId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Questions", x => x.QuestionId);
+                    table.PrimaryKey("PK_QuestionnarieQuestions", x => new { x.QuestionnarieId, x.QuestionId });
                     table.ForeignKey(
-                        name: "FK_Questions_Questionnaries_QuestionnarieId",
+                        name: "FK_QuestionnarieQuestions_Questions_QuestionId",
+                        column: x => x.QuestionId,
+                        principalTable: "Questions",
+                        principalColumn: "QuestionId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_QuestionnarieQuestions_Questionnaries_QuestionnarieId",
                         column: x => x.QuestionnarieId,
                         principalTable: "Questionnaries",
                         principalColumn: "QuestionnarieId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -173,6 +190,44 @@ namespace PdrAutomate.WebUI.Migrations
                         column: x => x.SessionId,
                         principalTable: "Sessions",
                         principalColumn: "SessionId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StudentPresentationQuestionnarieSessions",
+                columns: table => new
+                {
+                    StudentId = table.Column<int>(nullable: false),
+                    PresentationId = table.Column<int>(nullable: false),
+                    QuestionnarieId = table.Column<int>(nullable: false),
+                    SessionId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StudentPresentationQuestionnarieSessions", x => new { x.StudentId, x.PresentationId, x.QuestionnarieId, x.SessionId });
+                    table.ForeignKey(
+                        name: "FK_StudentPresentationQuestionnarieSessions_Presentations_PresentationId",
+                        column: x => x.PresentationId,
+                        principalTable: "Presentations",
+                        principalColumn: "PresentationId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StudentPresentationQuestionnarieSessions_Questionnaries_QuestionnarieId",
+                        column: x => x.QuestionnarieId,
+                        principalTable: "Questionnaries",
+                        principalColumn: "QuestionnarieId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StudentPresentationQuestionnarieSessions_Sessions_SessionId",
+                        column: x => x.SessionId,
+                        principalTable: "Sessions",
+                        principalColumn: "SessionId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StudentPresentationQuestionnarieSessions_Students_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Students",
+                        principalColumn: "StudentId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -261,9 +316,24 @@ namespace PdrAutomate.WebUI.Migrations
                 column: "SessionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Questions_QuestionnarieId",
-                table: "Questions",
+                name: "IX_QuestionnarieQuestions_QuestionId",
+                table: "QuestionnarieQuestions",
+                column: "QuestionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StudentPresentationQuestionnarieSessions_PresentationId",
+                table: "StudentPresentationQuestionnarieSessions",
+                column: "PresentationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StudentPresentationQuestionnarieSessions_QuestionnarieId",
+                table: "StudentPresentationQuestionnarieSessions",
                 column: "QuestionnarieId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StudentPresentationQuestionnarieSessions_SessionId",
+                table: "StudentPresentationQuestionnarieSessions",
+                column: "SessionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StudentPresentationsessions_PresentationId",
@@ -307,6 +377,12 @@ namespace PdrAutomate.WebUI.Migrations
                 name: "PresentationSessions");
 
             migrationBuilder.DropTable(
+                name: "QuestionnarieQuestions");
+
+            migrationBuilder.DropTable(
+                name: "StudentPresentationQuestionnarieSessions");
+
+            migrationBuilder.DropTable(
                 name: "StudentPresentationsessions");
 
             migrationBuilder.DropTable(
@@ -325,10 +401,10 @@ namespace PdrAutomate.WebUI.Migrations
                 name: "Questions");
 
             migrationBuilder.DropTable(
-                name: "Students");
+                name: "Questionnaries");
 
             migrationBuilder.DropTable(
-                name: "Questionnaries");
+                name: "Students");
 
             migrationBuilder.DropTable(
                 name: "Classes");
