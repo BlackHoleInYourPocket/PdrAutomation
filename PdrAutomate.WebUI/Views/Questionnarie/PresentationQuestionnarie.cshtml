@@ -1,12 +1,92 @@
-﻿@model List<Question> 
+﻿@model List<Question>
 @{
-    ViewData["Title"] = "PresentationQuestionnarie";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "PresentationQuestionnarie";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>PresentationQuestionnarie</h1>
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/js/bootstrap.min.js"></script>
+<script src="~/js/jquery-3.2.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+<div class="main-content  py-5 mb-5">
+	<div class="container">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<h4>Sunum Öncesi Anketi</h4>
+					<hr>
+				</div>
+			</div>
+		</div>
+		<div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			@foreach (var question in Model)
+			{
+				@if (question.IsCheckbox)
+				{
+					<div class="container">
+						<p>@question.QuestionName</p>
+						<form class="form-control">
+							<div class="row-cols-4">
+								<label class="radio-inline">
+									<input type="radio" name="optradio" required>Pek Çok&nbsp;&nbsp;
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="optradio" required>Çok&nbsp;&nbsp;
+								</label>
 
-@foreach(var q in Model)
-{
-    <p>@q.QuestionName</p><br />
-}
+								<label class="radio-inline">
+									<input type="radio" name="optradio" required>Az&nbsp;&nbsp;
+								</label>
+
+								<label class="radio-inline">
+									<input type="radio" name="optradio" required>Hiç
+								</label>
+							</div>
+						</form>
+					</div>
+
+				}
+				@if (!question.IsCheckbox)
+				{
+					<div class="container">
+						<p>@question.QuestionName</p>
+						<form>
+							<div class="form-group">
+								<textarea class="form-control" rows="3" id="comment"></textarea>
+							</div>
+						</form>
+					</div>
+				}
+
+
+			}
+			<div class="container">
+				<button class="btn btn-primary" onclick="SubmitBeforeQuestionnarie()" type="submit">Gönder</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+
+	function SubmitBeforeQuestionnarie() {
+		var reply = confirm("Anketi göndermek istediğinize emin misiniz ?");
+		if (reply) {
+            $.ajax({
+                type: "POST",
+                url: "/Student/RemovePresentation?studentSchoolId=" +@User.Identity.Name
+                    +"&presentationId=" + _presentationId
+                    + "&sessionId=" + _sessionId,
+                data: null,
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    alert(response);
+                    window.location.href = "/Presentations/Index"
+                },
+            });
+        }
+        else {
+            alert("Anket gönderimini iptal ettiniz.");
+        }
+	}
+
+</script>
