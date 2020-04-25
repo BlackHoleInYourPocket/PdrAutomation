@@ -33,22 +33,15 @@
                 </li>
                 <li class="nav-item dropdown col-md-3">
                     <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Anketler
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item">Sunum Anketi Ekle</a>
-                        <a class="dropdown-item" href="#">Kişisel Anket Ekle</a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown col-md-3">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Öğrenciler
+                        Öğrenci İşlemleri
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item"
                            asp-controller="Teacher"
                            asp-action="StudentList">Sunuma Katılan Öğrencileri Göster</a>
-                        <a class="dropdown-item" href="#">Sunum Anket Sonuçlarını Göster</a>
+                        <a class="dropdown-item"
+                           asp-controller="Questionnarie"
+                           asp-action="ShowPresentationQuestionnarie">Sunum Anket Sonuçlarını Göster</a>
                         <a class="dropdown-item" href="#">Kişisel Anket Sonuçlarını Göster</a>
                     </div>
                 </li>
