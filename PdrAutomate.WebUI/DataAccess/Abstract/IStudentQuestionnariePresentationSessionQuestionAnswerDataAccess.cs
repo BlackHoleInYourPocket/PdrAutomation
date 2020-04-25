@@ -6,7 +6,7 @@ using PdrAutomate.WebUI.Entity;
 
 namespace PdrAutomate.WebUI.DataAccess.Abstract
 {
-	public interface IStudentQuestionnarieQuestionAnswerDataAccess : IGenericDataAccess<StudentQuestionnarieQuestionAnswer>
+	public interface IStudentQuestionnariePresentationSessionQuestionAnswerDataAccess : IGenericDataAccess<StudentQuestionnariePresentationSessionQuestionAnswer>
 	{
 	}
 }

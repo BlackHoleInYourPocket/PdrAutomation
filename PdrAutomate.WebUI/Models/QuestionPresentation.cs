@@ -10,6 +10,7 @@ namespace PdrAutomate.WebUI.Models
 	{
 		public int SessionId { get; set; }
 		public int PresentationId { get; set; }
+		public int QuestionnarieId { get; set; }
 		public List<Question> Questions { get; set; }
 	}
 }

@@ -7,9 +7,9 @@ using PdrAutomate.WebUI.Entity;
 
 namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
 {
-	public class EfStudentQuestionnarieQuestionAnswerDataAccess : EfGenericDataAccess<StudentQuestionnarieQuestionAnswer>, IStudentQuestionnarieQuestionAnswerDataAccess
+	public class EfStudentQuestionnariePresentationSessionQuestionAnswerDataAccess : EfGenericDataAccess<StudentQuestionnariePresentationSessionQuestionAnswer>, IStudentQuestionnariePresentationSessionQuestionAnswerDataAccess
     {
-        public EfStudentQuestionnarieQuestionAnswerDataAccess(PdrAutomateContext context) : base(context)
+        public EfStudentQuestionnariePresentationSessionQuestionAnswerDataAccess(PdrAutomateContext context) : base(context)
         {
 
         }

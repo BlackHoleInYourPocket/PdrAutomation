@@ -23,8 +23,7 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
         private IAnswerDataAccess _AnswerDataAccess;
         private IQuestionnarieDataAccess _QuestionnarieDataAccess;
         private IQuestionsDataAccess _QuestionsDataAccess;
-        private IStudentQuestionnarieQuestionAnswerDataAccess _StudentQuestionnarieQuestionAnswerDataAccess;
-        private IStudentPresentationQuestionnarieSessionDataAccess _StudentPresentationQuestionnarieSessionDataAccess;
+        private IStudentQuestionnariePresentationSessionQuestionAnswerDataAccess _StudentQuestionnariePresentationSessionQuestionAnswerDataAccess;
         private IQuestionnarieQuestionDataAccess _QuestionnarieQuestionDataAccess;
         public IClassDataAccess ClassDataAccess
         {
@@ -102,20 +101,11 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
 
             }
         }
-        public IStudentQuestionnarieQuestionAnswerDataAccess StudentQuestionnarieQuestionAnswerDataAccess
+        public IStudentQuestionnariePresentationSessionQuestionAnswerDataAccess StudentQuestionnarieQuestionAnswerDataAccess
         {
             get
             {
-                return _StudentQuestionnarieQuestionAnswerDataAccess ?? (_StudentQuestionnarieQuestionAnswerDataAccess = new EfStudentQuestionnarieQuestionAnswerDataAccess(dbContext));
-
-            }
-        }
-
-        public IStudentPresentationQuestionnarieSessionDataAccess StudentPresentationQuestionnarieSessionDataAccess
-        {
-            get
-            {
-                return _StudentPresentationQuestionnarieSessionDataAccess ?? (_StudentPresentationQuestionnarieSessionDataAccess = new EfStudentPresentationQuestionnarieSessionDataAccess(dbContext));
+                return _StudentQuestionnariePresentationSessionQuestionAnswerDataAccess ?? (_StudentQuestionnariePresentationSessionQuestionAnswerDataAccess = new EfStudentQuestionnariePresentationSessionQuestionAnswerDataAccess(dbContext));
 
             }
         }
@@ -128,6 +118,16 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
 
             }
         }
+
+        public IStudentQuestionnariePresentationSessionQuestionAnswerDataAccess StudentQuestionnariePresentationSessionQuestionAnswerDataAccess
+        {
+            get
+            {
+                return _StudentQuestionnariePresentationSessionQuestionAnswerDataAccess ?? (_StudentQuestionnariePresentationSessionQuestionAnswerDataAccess = new EfStudentQuestionnariePresentationSessionQuestionAnswerDataAccess(dbContext));
+
+            }
+        }
+
         public void Dispose()
         {
             dbContext.Dispose();

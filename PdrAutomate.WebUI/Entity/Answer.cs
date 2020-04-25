@@ -9,7 +9,7 @@ namespace PdrAutomate.WebUI.Entity
 	{
 		public int AnswerId { get; set; }
 		public string AnswerName { get; set; }
-		public StudentQuestionnarieQuestionAnswer StudentQuestionnarieQuestionAnswers { get; set; }
+		public StudentQuestionnariePresentationSessionQuestionAnswer StudentQuestionnarieQuestionAnswers { get; set; }
 
 	}
 }

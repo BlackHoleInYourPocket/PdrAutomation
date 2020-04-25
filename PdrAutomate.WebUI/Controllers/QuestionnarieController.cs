@@ -62,8 +62,7 @@ namespace PdrAutomate.WebUI.Controllers
 
             return View(returnList);
         }
-
-        public IActionResult PresentationQuestionnarie(int presentationId,int sessionId,string questionnarieName)
+        public IActionResult PresentationQuestionnarie(int presentationId, int sessionId, string questionnarieName)
         {
             QuestionPresentation returnModel = new QuestionPresentation();
             returnModel.PresentationId = presentationId;
@@ -74,11 +73,12 @@ namespace PdrAutomate.WebUI.Controllers
                 .Where(i => i.QuestionnarieName.Equals(questionnarieName))
                 .FirstOrDefault()
                 .QuestionnarieId;
+            returnModel.QuestionnarieId = questionnarieId;
             var questions = uow.QuestionnarieQuestionDataAccess
                 .GetAll()
                 .Where(i => i.QuestionnarieId.Equals(questionnarieId))
                 .ToList();
-            foreach(var question in questions)
+            foreach (var question in questions)
             {
                 questionList.Add(question.Question = uow.QuestionsDataAccess
                     .Get(question.QuestionId));
@@ -86,19 +86,13 @@ namespace PdrAutomate.WebUI.Controllers
             returnModel.Questions = questionList;
             return View(returnModel);
         }
-        public string SendPresentationQuestionnarie(string schoolId,int presentationId,int sessionId,string answers)
+        public string SendPresentationQuestionnarie(string schoolId, int presentationId, int sessionId,int questionnarieId ,string answers)
         {
             int studentId = uow.StudentDataAccess
                     .GetAll()
                     .Where(c => c.StudentSchoolId == schoolId)
                     .FirstOrDefault()
                     .StudentId;
-
-            int questionnarieId = uow.QuestionnarieDataAccess
-                .GetAll()
-                .Where(c => c.QuestionnarieName == "Before")
-                .FirstOrDefault()
-                .QuestionnarieId;
             try
             {
                 var questionIdAnswer = Newtonsoft.Json.JsonConvert.DeserializeObject<string[][]>(answers);
@@ -119,23 +113,17 @@ namespace PdrAutomate.WebUI.Controllers
                             questionIdAnswer[i][1] = "Pek Çok";
                             break;
                     }
-                    uow.StudentQuestionnarieQuestionAnswerDataAccess
-                    .Add(new StudentQuestionnarieQuestionAnswer()
-                    {
-                        Answer = new Answer() { AnswerName = questionIdAnswer[i][1] },
-                        QuestionId = Convert.ToInt32(questionIdAnswer[i][0]),
-                        QuestionnarieId = questionnarieId,
-                        StudentId=studentId
-                    });
-                }
-                uow.StudentPresentationQuestionnarieSessionDataAccess
-                        .Add(new StudentPresentationQuestionnarieSession()
+                    uow.StudentQuestionnariePresentationSessionQuestionAnswerDataAccess
+                        .Add(new StudentQuestionnariePresentationSessionQuestionAnswer()
                         {
-                            QuestionnarieId = questionnarieId,
                             StudentId = studentId,
+                            QuestionnarieId = questionnarieId,
+                            PresentationId = presentationId,
                             SessionId = sessionId,
-                            PresentationId = presentationId
+                            QuestionId = Convert.ToInt32(questionIdAnswer[i][0]),
+                            Answer = new Answer() { AnswerName = questionIdAnswer[i][1] }
                         });
+                }
                 uow.SaveChanges();
             }
             catch (Exception ex)
@@ -144,11 +132,12 @@ namespace PdrAutomate.WebUI.Controllers
             }
             return "Anket gönderimi başarılı";
         }
+
         public IActionResult PersonalQuestionnarieIndex()
         {
             return View();
         }
-        
+
         public IActionResult ShowPresentationQuestionnarie()
         {
             List<Presentation> returnList = new List<Presentation>();
@@ -190,7 +179,7 @@ namespace PdrAutomate.WebUI.Controllers
             }
             return View(returnList);
         }
-        public IActionResult ShowQuestionnarieResult(int pid,int sid)
+        public IActionResult ShowQuestionnarieResultIndex(int pid, int sid)
         {
             StudentPresentationSessionModel returnModel = new StudentPresentationSessionModel();
             returnModel.PresentationId = pid;
@@ -202,7 +191,7 @@ namespace PdrAutomate.WebUI.Controllers
                 .Where(i => i.PresentationId == pid && i.SessionId == sid)
                 .ToList();
 
-            foreach(var st in students)
+            foreach (var st in students)
             {
                 st.Student = uow.StudentDataAccess.Get(st.StudentId);
                 st.Student.Class = uow.ClassDataAccess.Get(st.Student.ClassId);
@@ -210,12 +199,13 @@ namespace PdrAutomate.WebUI.Controllers
             }
             returnModel.Students = registeredStudents;
             return View(returnModel);
-        }     
-        public IActionResult ShowBeforeQuestionnarieResult(string studentSchoolId,int pid,int sid)
+        }
+        public IActionResult ShowQuestionnarieResult(string studentSchoolId, int pid, int sid,string questionnarieName)
         {
+            List<StudentQuestionnariePresentationSessionQuestionAnswer> returnList = new List<StudentQuestionnariePresentationSessionQuestionAnswer>(); 
             int qId = uow.QuestionnarieDataAccess
                 .GetAll()
-                .Where(i => i.QuestionnarieName == "Before")
+                .Where(i => i.QuestionnarieName == questionnarieName)
                 .FirstOrDefault()
                 .QuestionnarieId;
             int studentId = uow.StudentDataAccess
@@ -223,10 +213,23 @@ namespace PdrAutomate.WebUI.Controllers
                 .Where(i => i.StudentSchoolId == studentSchoolId)
                 .FirstOrDefault()
                 .StudentId;
-            var answers = uow.StudentQuestionnarieQuestionAnswerDataAccess
+            var answers = uow.StudentQuestionnariePresentationSessionQuestionAnswerDataAccess
                 .GetAll()
-                .Where(i => i.StudentId == studentId && i.QuestionnarieId == qId);
-            return View();
+                .Where(i => i.StudentId == studentId && i.QuestionnarieId == qId
+                && i.PresentationId == pid && i.SessionId == sid)
+                .ToList();
+
+            foreach(var item in answers)
+            {
+                item.Answer = uow.AnswerDataAccess.Get(item.AnswerId);
+                item.Presentation = uow.PresentationDataAccess.Get(item.PresentationId);
+                item.Question = uow.QuestionsDataAccess.Get(item.QuestionId);
+                item.Questionnarie = uow.QuestionnarieDataAccess.Get(item.QuestionnarieId);
+                item.Session = uow.SessionsDataAccess.Get(item.SessionId);
+                item.Student = uow.StudentDataAccess.Get(item.StudentId);
+                returnList.Add(item);
+            }
+            return View(returnList);
         }
 
     }

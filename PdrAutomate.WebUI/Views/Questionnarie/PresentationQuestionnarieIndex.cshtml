@@ -88,10 +88,12 @@
     });
 
 	function BeforeQuestionnarie(presentationId, sessionId) {
-
 		window.location.href = "/Questionnarie/PresentationQuestionnarie?presentationId=" + presentationId +
 			"&sessionId=" + sessionId + "&questionnarieName=Before";
-
+    }
+	function AfterQuestionnarie(presentationId, sessionId) {
+		window.location.href = "/Questionnarie/PresentationQuestionnarie?presentationId=" + presentationId +
+			"&sessionId=" + sessionId + "&questionnarieName=After";
     }
 </script>
 

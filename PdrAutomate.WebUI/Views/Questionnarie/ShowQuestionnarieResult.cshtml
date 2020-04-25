@@ -1,37 +1,106 @@
-﻿@model StudentPresentationSessionModel
+﻿@model List<StudentQuestionnariePresentationSessionQuestionAnswer>
 @{
-	ViewData["Title"] = "ShowQuestionnarieResult";
-	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "ShowBeforeQuestionnarieResult";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 <link href="~/css/bootstrap.min.css" rel="stylesheet" />
 <script src="~/js/bootstrap.min.js"></script>
 <script src="~/js/jquery-3.2.1.min.js"></script>
-<div class="table-responsive" id="sailorTableArea">
-	<table id="sailorTable" class="table table-striped table-bordered" width="100%">
-
-		<thead>
-			<tr>
-				<th>Öğrenci Numarası</th>
-				<th>Öğrenci Sınıfı</th>
-				<th>Öğrenci Adı</th>
-				<th>Öğrenci Soyadı</th>
-				<th>Sunum Öncesi Anketi</th>
-				<th>Sunum Sonrası Anketi</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var item in Model.Students)
-			{
-				<tr>
-					<td>@item.StudentSchoolId</td>
-					<td>@item.Class.ClassName</td>
-					<td>@item.StudentName</td>
-					<td>@item.StudentSurname</td>
-					<td><button class="btn btn-primary">Görüntüle</button></td>
-					<td><button class="btn btn-primary">Görüntüle</button></td>
-				</tr>
-			}
-		</tbody>
-	</table>
+<div class="main-content  py-5 mb-5">
+	<div class="container">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<h4>Sunum Öncesi Anketi</h4>
+					<hr>
+				</div>
+			</div>
+		</div>
+		<div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="container">
+				@foreach (var question in Model)
+				{
+					@if (question.Question.IsCheckbox)
+					{
+						<p>@question.Question.QuestionName</p>
+						<form class="form-control">
+							<div class="row-cols-4">
+								@if (question.Answer.AnswerName.Equals("Pek Çok"))
+								{
+									<label class="radio-inline">
+										<input type="radio" name="@question.QuestionId"
+											   onclick="ClickSelection(@question.QuestionId.ToString(),4)" checked disabled>Pek Çok&nbsp;&nbsp;
+									</label>
+								}
+								else
+								{
+									<label class="radio-inline">
+										<input type="radio" name="@question.QuestionId"
+											   onclick="ClickSelection(@question.QuestionId.ToString(),4)" disabled>Pek Çok&nbsp;&nbsp;
+									</label>
+								}
+								@if (question.Answer.AnswerName.Equals("Çok"))
+								{
+									<label class="radio-inline">
+										<input type="radio" name="@question.QuestionId"
+											   onclick="ClickSelection(@question.QuestionId.ToString(),3)" checked disabled>Çok&nbsp;&nbsp;
+									</label>
+								}
+								else
+								{
+									<label class="radio-inline">
+										<input type="radio" name="@question.QuestionId"
+											   onclick="ClickSelection(@question.QuestionId.ToString(),3)" disabled>Çok&nbsp;&nbsp;
+									</label>
+								}
+								@if (question.Answer.AnswerName.Equals("Az"))
+								{
+									<label class="radio-inline">
+										<input type="radio" name="@question.QuestionId"
+											   onclick="ClickSelection(@question.QuestionId.ToString(),2)" checked disabled>Az&nbsp;&nbsp;
+									</label>
+								}
+								else
+								{
+									<label class="radio-inline">
+										<input type="radio" name="@question.QuestionId"
+											   onclick="ClickSelection(@question.QuestionId.ToString(),2)" disabled>Az&nbsp;&nbsp;
+									</label>
+								}
+								@if (question.Answer.AnswerName.Equals("Hiç"))
+								{
+									<label class="radio-inline">
+										<input type="radio" name="@question.QuestionId"
+											   onclick="ClickSelection(@question.QuestionId.ToString(),1)" checked disabled>Hiç
+									</label>
+								}
+								else
+								{
+									<label class="radio-inline">
+										<input type="radio" name="@question.QuestionId"
+											   onclick="ClickSelection(@question.QuestionId.ToString(),1)" disabled>Hiç
+									</label>
+								}
+							</div>
+						</form>
+					}
+					@if (!question.Question.IsCheckbox)
+					{
+						<div>
+							<p>@question.Question.QuestionName</p>
+							<form>
+								<div>
+									<textarea class="form-control" rows="3" id="comment"></textarea>
+								</div>
+							</form>
+						</div>
+					}
+				}
+			</div>
+		</div>
+	</div>
 </div>
+
+
+
 
