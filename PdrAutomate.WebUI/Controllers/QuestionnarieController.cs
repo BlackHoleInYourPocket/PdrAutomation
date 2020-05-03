@@ -248,7 +248,54 @@ namespace PdrAutomate.WebUI.Controllers
 
             return View(returnList);
         }
-		#endregion
+		public string SendPersonalQuestionnarie(string schooldId,string questionnarieName, string answers)
+        {
+            var questionIdAnswer = Newtonsoft.Json.JsonConvert.DeserializeObject<string[][]>(answers);
+            var studentId = uow.StudentDataAccess
+                .GetAll()
+                .Where(i => i.StudentSchoolId.Equals(schooldId))
+                .FirstOrDefault()
+                .StudentId;
+            var questionnarieId = uow.QuestionnarieDataAccess
+                .GetAll()
+                .Where(i => i.QuestionnarieName.Equals(questionnarieName))
+                .FirstOrDefault()
+                .QuestionnarieId;
+            try
+            {
+
+                for (int i = 0; i < questionIdAnswer.Length; i++)
+                {
+                    uow.BeierStudentQuestionnarieQuestionAnswerDataAccess
+                        .Add(new StudentQuestionnarieQuestionAnswer()
+                        {
+                            Answer = new Answer() { AnswerName = questionIdAnswer[i][1] },
+                            QuestionId = Convert.ToInt32(questionIdAnswer[i][0]),
+                            QuestionnarieId = questionnarieId,
+                            StudentId = studentId
+                        });
+                    uow.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                return questionnarieName + " anketiniz gönderilirken bir sorun oluştu.";
+            }
+            return questionnarieName+ " anketiniz gönderildi";
+        }
+        public IActionResult ShowPersonalQuestionnarieIndex()
+        {
+            var classes = uow.ClassDataAccess.GetAll().ToList();
+            foreach (var _class in classes)
+            {
+                _class.Students = uow.StudentDataAccess
+                    .GetAll()
+                    .Where(i => i.ClassId == _class.ClassId)
+                    .ToList();
+            }
+            return View(classes);
+        }
+        #endregion
 
 	}
 }

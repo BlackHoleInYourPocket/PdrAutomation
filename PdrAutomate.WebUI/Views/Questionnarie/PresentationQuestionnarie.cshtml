@@ -49,7 +49,7 @@
 							<p>@question.QuestionName</p>
 							<form>
 								<div>
-									<textarea class="form-control" rows="3" id="comment"></textarea>
+									<textarea name="textra" id ="@question.QuestionId" class="form-control" rows="3" id="comment"></textarea>
 								</div>
 							</form>
 						</div>
@@ -74,9 +74,11 @@
 			IsValid = false;
 		}
 		if (IsValid) {
+
 			var reply = confirm("Anketi göndermek istediğinize emin misiniz ?");
 
-			if (reply) {
+			if (reply) {				
+				selectionMap.set(document.getElementsByName("textra")[0].id, document.getElementsByName("textra")[0].value)
 				$.ajax({
 					type: "POST",
 					url: "/Questionnarie/SendPresentationQuestionnarie?schoolId="

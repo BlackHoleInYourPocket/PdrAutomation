@@ -25,6 +25,7 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
         private IQuestionsDataAccess _QuestionsDataAccess;
         private IStudentQuestionnariePresentationSessionQuestionAnswerDataAccess _StudentQuestionnariePresentationSessionQuestionAnswerDataAccess;
         private IQuestionnarieQuestionDataAccess _QuestionnarieQuestionDataAccess;
+        private IStudentQuestionnarieQuestionAnswerDataAccess _StudentQuestionnarieQuestionAnswerDataAccess;
         public IClassDataAccess ClassDataAccess
         {
             get
@@ -127,7 +128,14 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
 
             }
         }
+        public IStudentQuestionnarieQuestionAnswerDataAccess BeierStudentQuestionnarieQuestionAnswerDataAccess
+        {
+            get
+            {
+                return _StudentQuestionnarieQuestionAnswerDataAccess ?? (_StudentQuestionnarieQuestionAnswerDataAccess = new EfStudentQuestionnarieQuestionAnswerDataAccess(dbContext));
 
+            }
+        }
         public void Dispose()
         {
             dbContext.Dispose();
