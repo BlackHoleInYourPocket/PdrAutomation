@@ -18,7 +18,8 @@ namespace PdrAutomate.WebUI.Controllers
         {
             uow = _uow;
         }
-        public IActionResult PresentationQuestionnarieIndex(string studentSchoolId)
+		#region [Presentation]
+		public IActionResult PresentationQuestionnarieIndex(string studentSchoolId)
         {
             List<ClassPresentationsession> returnList = new List<ClassPresentationsession>();
             var studentId = uow.StudentDataAccess
@@ -132,12 +133,6 @@ namespace PdrAutomate.WebUI.Controllers
             }
             return "Anket gönderimi başarılı";
         }
-
-        public IActionResult PersonalQuestionnarieIndex()
-        {
-            return View();
-        }
-
         public IActionResult ShowPresentationQuestionnarie()
         {
             List<Presentation> returnList = new List<Presentation>();
@@ -231,6 +226,29 @@ namespace PdrAutomate.WebUI.Controllers
             }
             return View(returnList);
         }
+        #endregion
 
-    }
+        #region [Personal]
+        public IActionResult PersonalQuestionnarieIndex()
+        {
+            List<Question> returnList = new List<Question>();
+            var questionnarieId = uow.QuestionnarieDataAccess
+                .GetAll()
+                .Where(i => i.QuestionnarieName.Equals("Beier"))
+                .FirstOrDefault().QuestionnarieId;
+            var questions = uow.QuestionnarieQuestionDataAccess
+                .GetAll()
+                .Where(i => i.QuestionnarieId == questionnarieId)
+                .ToList();
+            foreach (var question in questions)
+            {
+                question.Question = uow.QuestionsDataAccess.Get(question.QuestionId);
+                returnList.Add(question.Question);
+            }
+
+            return View(returnList);
+        }
+		#endregion
+
+	}
 }
