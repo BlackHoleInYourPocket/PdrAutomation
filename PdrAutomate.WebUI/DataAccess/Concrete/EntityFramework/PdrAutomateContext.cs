@@ -27,7 +27,7 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
 		public DbSet<StudentQuestionnariePresentationSessionQuestionAnswer> StudentQuestionnariePresentationSessionQuestionAnswers { get; set; }
 		public DbSet<QuestionnarieQuestion> QuestionnarieQuestions { get; set; }
 		public DbSet<StudentQuestionnarieQuestionAnswer> BeierStudentQuestionnarieQuestionAnswers { get; set; }
-
+		public DbSet<AnewDictionary> AnewDictionaries { get; set; }
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<Sessions>()
@@ -49,7 +49,9 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
 			modelBuilder.Entity<QuestionnarieQuestion>()
 				.HasKey(pk => new { pk.QuestionnarieId, pk.QuestionId });
 			modelBuilder.Entity<StudentQuestionnarieQuestionAnswer>()
-			.HasKey(pk => new { pk.StudentId, pk.QuestionnarieId,  pk.AnswerId });
+				.HasKey(pk => new { pk.StudentId, pk.QuestionnarieId,  pk.AnswerId });
+			modelBuilder.Entity<AnewDictionary>()
+				.HasKey(pk => new { pk.AnewDictionaryId});
 
 		}
 	}

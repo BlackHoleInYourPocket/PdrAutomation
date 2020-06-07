@@ -46,9 +46,12 @@
 													@students.StudentSchoolId
 												</div>
 												<div class="col-md-5">
-													<button class="btn btn-primary" onclick="deleteStudent(@students.StudentId)">
-														Beier Analizini Görüntüle
-													</button>
+                                                    <button class="btn btn-primary">
+                                                        <a asp-controller="Teacher"
+                                                           asp-action="CreateBeierAnalysis" 
+														   asp-route-studentSchoolId="@students.StudentSchoolId" 
+														   class="dropdown-item">Beier Analizini Görüntüle</a>
+                                                    </button>
 												</div>
 											</div>
 										}

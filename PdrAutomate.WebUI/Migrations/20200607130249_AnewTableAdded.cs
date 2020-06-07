@@ -4,10 +4,27 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PdrAutomate.WebUI.Migrations
 {
-    public partial class newdatabase : Migration
+    public partial class AnewTableAdded : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AnewDictionaries",
+                columns: table => new
+                {
+                    AnewDictionaryId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TurkishContent = table.Column<string>(nullable: true),
+                    EnglishContent = table.Column<string>(nullable: true),
+                    Valance = table.Column<double>(nullable: false),
+                    Arousal = table.Column<double>(nullable: false),
+                    Dominance = table.Column<double>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AnewDictionaries", x => x.AnewDictionaryId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Answers",
                 columns: table => new
@@ -393,6 +410,9 @@ namespace PdrAutomate.WebUI.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AnewDictionaries");
+
             migrationBuilder.DropTable(
                 name: "BeierStudentQuestionnarieQuestionAnswers");
 

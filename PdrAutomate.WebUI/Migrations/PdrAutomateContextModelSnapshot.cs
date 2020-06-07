@@ -19,6 +19,27 @@ namespace PdrAutomate.WebUI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("PdrAutomate.WebUI.Entity.AnewDictionary", b =>
+                {
+                    b.Property<int>("AnewDictionaryId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Arousal");
+
+                    b.Property<double>("Dominance");
+
+                    b.Property<string>("EnglishContent");
+
+                    b.Property<string>("TurkishContent");
+
+                    b.Property<double>("Valance");
+
+                    b.HasKey("AnewDictionaryId");
+
+                    b.ToTable("AnewDictionaries");
+                });
+
             modelBuilder.Entity("PdrAutomate.WebUI.Entity.Answer", b =>
                 {
                     b.Property<int>("AnswerId")

@@ -6,12 +6,13 @@ using PdrAutomate.WebUI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using WordMorphology;
 namespace PdrAutomate.WebUI.Controllers
 {
     [Authorize]
     public class TeacherController : Controller
     {
+        #region Otomasyon
         IUnitOfWork uow;
         public TeacherController(IUnitOfWork _uow)
         {
@@ -374,6 +375,105 @@ namespace PdrAutomate.WebUI.Controllers
             }
             return View(returnList);
         }
+        #endregion
 
+        public IActionResult CreateBeierAnalysis(string studentSchoolId)
+        {
+            BeierResult returnModel = new BeierResult();
+            BeierAnalysis analysis = new BeierAnalysis();
+            returnModel.Valance = 0;
+            returnModel.Dominanace = 0;
+            returnModel.Arousal = 0;
+            bool valance = true, dominance = true, arousal = true;
+            List<Answer> answers = new List<Answer>();
+            int studentId = uow.StudentDataAccess
+                                .GetAll()
+                                .Where(x => x.StudentSchoolId.Equals(studentSchoolId))
+                                .FirstOrDefault()
+                                .StudentId;
+            returnModel.Student = uow.StudentDataAccess
+                                .GetAll()
+                                .Where(x => x.StudentId == studentId)
+                                .FirstOrDefault();
+
+            returnModel.Student.Class = uow.ClassDataAccess
+                                .GetAll()
+                                .Where(x => x.ClassId == returnModel.Student.ClassId)
+                                .FirstOrDefault();
+
+            var allData = uow.BeierStudentQuestionnarieQuestionAnswerDataAccess
+                                .GetAll()
+                                .Where(x => x.StudentId == studentId)
+                                .ToList();
+
+            foreach (var data in allData)
+            {
+                answers.Add(uow.AnswerDataAccess
+                                .GetAll()
+                                .Where(x => x.AnswerId == data.AnswerId)
+                                .FirstOrDefault());
+            }
+
+            List<AnewDictionary> Anew = uow.AnewDictionaryDataAccess
+                                .GetAll()
+                                .ToList();
+
+            foreach (var answer in answers)
+            {
+                String[] splittedAnswer = answer.AnswerName.Split(' ');
+                for (int i = 0; i < splittedAnswer.Length; i++)
+                {
+                    bool firstMastar = false;
+                    string ek = analysis.BeierEk(splittedAnswer[i]);
+                    string kök = analysis.BeierKök(splittedAnswer[i]);
+
+                    if (kök.Equals("")) continue;
+                    if (ek.Equals("FIIL_KOK"))
+                    {
+                        kök = String.Concat(kök, "mak");
+                        if (Anew.Exists(x => x.TurkishContent.Equals(kök)))
+                        {
+                            firstMastar = true;
+                        }
+                    }
+                    if (ek.Equals("FIIL_KOK") && !firstMastar)
+                    {
+                        kök = String.Concat(kök, "mek");
+                    }
+
+                    if (Anew.Exists(x => x.TurkishContent.Equals(kök)))
+                    {
+                        AnewDictionary values = Anew.FirstOrDefault(x => x.TurkishContent.Equals(kök));
+                        returnModel.Valance += values.Valance;
+                        returnModel.Dominanace += values.Dominance;
+                        returnModel.Arousal += values.Arousal;
+                    }
+
+                }
+            }
+
+            if (returnModel.Valance < 0) valance = false;
+            if (returnModel.Arousal < 0) arousal = false;
+            if (returnModel.Dominanace < 0) dominance = false;
+
+            //  A +,V +,D + (En risksiz)
+            //  A -, V +, D + (Risksiz)
+            //  A +,V -,D + (Hayatından memnun değil ama kontrollü davranabiliyor)    
+            //  A -, V -, D + (Depresif ama kontollü davranabiliyor)  
+            //  A +,V +,D - (Hayatından memnun görünüyor ama kontollü davranamayabilir)  
+            //  A -, V +,D - (Hayatından pek memnun değil, kontolünü kaybetme eğilimi var)
+            //  A +,V -, D - (Şiddet eğilimli)
+            //  A -, V -, D - (Kendine zarar verebilme eğilimli)
+            if (arousal == true && valance == true && dominance == true) returnModel.Result = "En risksiz";
+            else if (arousal == false && valance == true && dominance == true) returnModel.Result = "Risksiz";
+            else if (arousal == true && valance == false && dominance == true) returnModel.Result = "Hayatından memnun değil ama kontrollü davranabiliyor";
+            else if (arousal == false && valance == false && dominance == true) returnModel.Result = "Depresif ama kontollü davranabiliyor";
+            else if (arousal == true && valance == true && dominance == false) returnModel.Result = "Hayatından memnun görünüyor ama kontollü davranamayabilir";
+            else if (arousal == false && valance == true && dominance == false) returnModel.Result = "Hayatından pek memnun değil, kontolünü kaybetme eğilimi var";
+            else if (arousal == true && valance == false && dominance == false) returnModel.Result = "Şiddet eğilimli";
+            else if (arousal == false && valance == false && dominance == false) returnModel.Result = "Kendine zarar verebilme eğilimli";
+
+            return View(returnModel);
+        }
     }
 }

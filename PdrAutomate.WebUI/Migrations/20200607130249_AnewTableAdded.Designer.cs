@@ -10,8 +10,8 @@ using PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework;
 namespace PdrAutomate.WebUI.Migrations
 {
     [DbContext(typeof(PdrAutomateContext))]
-    [Migration("20200503201447_newdatabase")]
-    partial class newdatabase
+    [Migration("20200607130249_AnewTableAdded")]
+    partial class AnewTableAdded
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,27 @@ namespace PdrAutomate.WebUI.Migrations
                 .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("PdrAutomate.WebUI.Entity.AnewDictionary", b =>
+                {
+                    b.Property<int>("AnewDictionaryId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Arousal");
+
+                    b.Property<double>("Dominance");
+
+                    b.Property<string>("EnglishContent");
+
+                    b.Property<string>("TurkishContent");
+
+                    b.Property<double>("Valance");
+
+                    b.HasKey("AnewDictionaryId");
+
+                    b.ToTable("AnewDictionaries");
+                });
 
             modelBuilder.Entity("PdrAutomate.WebUI.Entity.Answer", b =>
                 {
