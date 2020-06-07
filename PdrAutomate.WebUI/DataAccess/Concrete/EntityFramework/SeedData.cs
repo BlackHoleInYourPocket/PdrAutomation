@@ -44,7 +44,9 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
                                 context.AddRange(AnewRecord);
                             }
                         } while (reader.NextResult()); //Move to NEXT SHEET
+                        reader.Close();
                     }
+                    stream.Close();
                 }
                 context.SaveChanges();
             }
