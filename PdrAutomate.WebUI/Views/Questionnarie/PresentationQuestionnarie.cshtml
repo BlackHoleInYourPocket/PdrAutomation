@@ -1,0 +1,104 @@
+﻿@model QuestionPresentation
+@{
+	ViewData["Title"] = "PresentationQuestionnarie";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/js/bootstrap.min.js"></script>
+<script src="~/js/jquery-3.2.1.min.js"></script>
+<div class="main-content  py-5 mb-5">
+	<div class="container">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<h4>Sunum Öncesi Anketi</h4>
+					<hr>
+				</div>
+			</div>
+		</div>
+		<div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="container">
+				@foreach (var question in Model.Questions)
+				{
+					@if (question.IsCheckbox)
+					{
+						<p>@question.QuestionName</p>
+						<form class="form-control">
+							<div class="row-cols-4">
+								<label class="radio-inline">
+									<input type="radio" name="@question.QuestionId" onclick="ClickSelection(@question.QuestionId.ToString(),4)">Pek Çok&nbsp;&nbsp;
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="@question.QuestionId" onclick="ClickSelection(@question.QuestionId.ToString(),3)">Çok&nbsp;&nbsp;
+								</label>
+
+								<label class="radio-inline">
+									<input type="radio" name="@question.QuestionId" onclick="ClickSelection(@question.QuestionId.ToString(),2)">Az&nbsp;&nbsp;
+								</label>
+
+								<label class="radio-inline">
+									<input type="radio" name="@question.QuestionId" onclick="ClickSelection(@question.QuestionId.ToString(),1)">Hiç
+								</label>
+							</div>
+						</form>
+					}
+					@if (!question.IsCheckbox)
+					{
+						<div>
+							<p>@question.QuestionName</p>
+							<form>
+								<div>
+									<textarea name="textra" id ="@question.QuestionId" class="form-control" rows="3" id="comment"></textarea>
+								</div>
+							</form>
+						</div>
+					}
+				}
+
+				<button class="btn btn-primary" onclick="SubmitQuestionnarie(@Model.PresentationId,@Model.SessionId,@Model.QuestionnarieId)" type="submit">Gönder</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	var selectionMap = new Map();
+
+	function ClickSelection(questionId,answer)
+	{
+		selectionMap.set(questionId, answer);
+	}
+	function SubmitQuestionnarie(presentationId, sessionId,questionnarieId) {
+		IsValid = true;
+		if (selectionMap.size <@Model.Questions.Count-1) {
+			IsValid = false;
+		}
+		if (IsValid) {
+
+			var reply = confirm("Anketi göndermek istediğinize emin misiniz ?");
+
+			if (reply) {				
+				selectionMap.set(document.getElementsByName("textra")[0].id, document.getElementsByName("textra")[0].value)
+				$.ajax({
+					type: "POST",
+					url: "/Questionnarie/SendPresentationQuestionnarie?schoolId="
+						+@User.Identity.Name+"&presentationId=" + presentationId
+                        + "&sessionId=" + sessionId + "&questionnarieId=" + questionnarieId
+                        + "&answers=" + JSON.stringify(Array.from(selectionMap)),
+					data: null,
+					contentType: "application/json; charset=utf-8",
+					success: function (response) {
+						alert(response);
+						window.location.href = "/Questionnarie/PresentationQuestionnarieIndex?studentSchoolId="+@User.Identity.Name
+					},
+				});
+			}
+			else {
+				alert("Anket gönderimini iptal ettiniz.");
+			}
+		}
+		else {
+			alert("Lütfen Tüm Soruları Cevaplayınız.");
+		}
+	}
+</script>

@@ -1,0 +1,92 @@
+﻿@model ClassSession
+@{
+	ViewData["Title"] = "Presentation";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/js/popper.min.js"></script>
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/js/bootstrap.min.js"></script>
+<script src="~/js/jquery-3.2.1.min.js"></script>
+
+<div class="main-content  py-5 mb-5">
+	<div class="container">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<h4>Sunum Ekle</h4>
+					<hr>
+				</div>
+			</div>
+		</div>
+		<div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="col-sm-2">
+				<label>Sınıf Adı</label>
+			</div>
+			<div class="col-sm-4">
+				<select id="class" class="selectpicker">
+					@foreach (var item in Model.Classes)
+					{
+						<option>@item.ClassName</option>
+					}
+				</select>
+			</div>
+		</div>
+		<div class="row mb-3"></div>
+		<div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="col-sm-2">
+				<label>Oturum Zamanı</label>
+			</div>
+			<div class="col-sm-4">
+				<select id="session" class="selectpicker">
+					@foreach (var item in Model.Sessions)
+					{
+						<option>@item.StartTime - @item.EndTime</option>
+					}
+				</select>
+			</div>
+		</div>
+		<div class="row mb-3"></div>
+		<div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="col-sm-2">
+				<label>Sunum Adı</label>
+			</div>
+			<div class="col-sm-4">
+				<input type="text" id="presentationName" />
+			</div>
+		</div>
+		<div class="row mb-3"></div>
+		<div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="col-sm-2">
+				<button type="button" onclick="addPresentation()" class="btn btn-primary">Ekle</button>
+			</div>
+			<div class="col-sm-4">
+				<button type="button" class="btn btn-primary">
+					<a asp-controller="Teacher" asp-action="PresentationList" style="color:white">
+						Görüntüle
+					</a>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+
+	function addPresentation(){	
+	    var className = document.getElementById('class').value;
+		var session = document.getElementById('session').value;
+		var presentationName = document.getElementById('presentationName').value;
+        $.ajax({
+                type: "POST",
+                url: "/Teacher/AddPresentation?className=" + className 
+				+"&sessions=" + session
+				+"&presentationName=" + presentationName,
+                data: null,
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    alert(response);
+                     window.location.reload()
+                },
+            });
+	}
+</script>

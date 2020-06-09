@@ -1,21 +1,72 @@
-﻿@model IEnumerable<PresentationClass>
+﻿@model ClassPresentationsession
 @{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Details";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
-@foreach (var item in Model)
-{
-    <p>Presentation Name : @item.Presentation.PresentationName</p>
-    <p>Toplam Kapasite : @item.Class.ClassCapacity</p>
-    <p>Kayıtlı Öğrenci Sayısı : @item.CurrentCapacity</p>
-    <p>Sınıf : @item.Class.ClassName</p>
-    <p>Section :  @item.Section</p>
-    <button class="btn-block" onclick="myFunction(@item.Presentation.PresentationId,@User.Identity.Name)">
-        <a asp-controller="Presentations"
-           asp-action="AddStudent"
-           asp-route-presentationId="@item.Presentation.PresentationId"
-           asp-route-studentSchoolId="@User.Identity.Name">Katıl</a>
-    </button>
-}
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/js/bootstrap.min.js"></script>
+<script src="~/js/jquery-3.2.1.min.js"></script>
+
+<div class="main-content  py-4 mb-5">
+	<div class="container">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<h4>Sunum Detayları</h4>
+					<hr>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12">
+			<label>Sunumun Adı : @Model.Presentation.PresentationName</label>
+			<div class="row mb-3"></div>
+			<label>Sunumun Toplam Kapasitesi : @Model.Class.ClassCapacity</label>
+			<div class="row mb-3"></div>
+			<label>Kayıtlı Öğrenci Sayısı : @Model.CurrentCapacity</label>
+			<div class="row mb-3"></div>
+			<label>Sunumun Yapılacağı Sınıf : @Model.Class.ClassName</label>
+			<div class="row mb-3"></div>
+			<label>Sunum Tarihi :  @Model.Sessions.StartTime <text> - </text> @Model.Sessions.EndTime</label>
+			<div class="row mb-5"></div>
+		</div>
+		<div class="row col-md-12">
+
+			<div class="col-sm-5">
+				<button class="btn btn-primary"
+						onclick="addStudent(@Model.Presentation.PresentationId,
+                            @User.Identity.Name,
+                            @Model.SessionId)">
+					Sunuma Katıl
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<script>
+    function addStudent(presentationId, studentSchoolId, sessionId) {
+        var reply = confirm("Bu sunuma katılmak istiyor musunuz ? ")
+        if (reply) {
+            $.ajax({
+                type: "POST",
+                url: "/Presentations/AddStudent?presentationId=" + presentationId +
+                    "&studentSchoolId=" + @User.Identity.Name +
+                    "&sessionId=" + sessionId,
+                data: null,
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    alert(response);
+                    window.location.href = "/Presentations/Index"
+                },
+            });
+        }
+        else
+        {
+            alert("Kayıt isteğinizi iptal ettiniz.")
+        }
+    }
+</script>
+

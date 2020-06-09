@@ -1,0 +1,79 @@
+﻿
+@{
+	ViewData["Title"] = "ShowPersonalQuestionnarieIndex";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/js/popper.min.js"></script>
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/js/bootstrap.min.js"></script>
+<script src="~/js/jquery-3.2.1.min.js"></script><div class="main-content py-5 mb-5">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+	<div class="container">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<h4>Sınıflar</h4>
+					<hr />
+				</div>
+			</div>
+		</div>
+		<div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="col-md-12">
+				<ul class="list-group">
+					@foreach (var item in Model)
+					{
+						<li class="list-group-item">
+							<div class="row">
+								<div class="col-md-6" align="right">
+									@item.ClassName
+								</div>
+								<div class="toggle" id="dropdown-detail-@item.ClassId.ToString()" data-toggle="detail-@item.ClassId.ToString()">
+									<i class="fa fa-chevron-down pull-right"></i>
+								</div>
+							</div>
+							<div id="detail-@item.ClassId.ToString()">
+								<hr>
+								<div class="container">
+									<div class="fluid-row">
+										<div class="row mb-3 col-xs-1">
+											Sınıfa Kayıtlı Öğrenciler
+										</div>
+										@foreach (var students in item.Students)
+										{
+											<div class="row mb-3 col-xs-1">
+												<div class="col-md-2">
+													@students.StudentSchoolId
+												</div>
+												<div class="col-md-5">
+                                                    <button class="btn btn-primary">
+                                                        <a asp-controller="Teacher"
+                                                           asp-action="CreateBeierAnalysis" 
+														   asp-route-studentSchoolId="@students.StudentSchoolId" 
+														   class="dropdown-item">Beier Analizini Görüntüle</a>
+                                                    </button>
+												</div>
+											</div>
+										}
+									</div>
+								</div>
+							</div>
+						</li>
+						<hr />
+					}
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+		$('[id^=detail-]').hide();
+		$('.toggle').click(function () {
+			$input = $(this);
+			$target = $('#' + $input.attr('data-toggle'));
+			$target.slideToggle();
+		});
+	});
+</script>

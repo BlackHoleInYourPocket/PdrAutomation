@@ -9,6 +9,9 @@ namespace PdrAutomate.WebUI.Entity
     {
         public int PresentationId { get; set; }
         public string PresentationName { get; set; }
+        public List<PresentationSession> Sessions { get; set; }
+        public List<ClassPresentationsession> ClassPresentationsessions { get; set; }
+        public List<StudentPresentationsession> StudentPresentationsessions { get; set; }
 
     }
 }

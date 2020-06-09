@@ -38,8 +38,11 @@ namespace PdrAutomate.WebUI
             services.AddTransient<IStudentDataAccess, EfStudentDataAccess>();
             services.AddTransient<IPresentationDataAccess, EfPresentationDataAccess>();
             services.AddTransient<IClassDataAccess, EfClassDataAccess>();
-            services.AddTransient<IPresentationClassDataAccess, EfPresentationClassDataAccess>();
-            services.AddTransient<IStudentPresentationDataAccess, EfStudentPresentationDataAccess>();
+            services.AddTransient<IClassPresentationsession, EfClassPresentationsession>();
+            services.AddTransient<IPresentationSession, EfPresentationSession>();
+            services.AddTransient<ISessionsDataAccess, EfSessions>();
+            services.AddTransient<IStudentPresentationsessionDataAccess, EfStudentPresentationsession>();
+            services.AddTransient<IUnitOfWork, EfUnitOfWork>();
             services.AddMvc();
         }
 

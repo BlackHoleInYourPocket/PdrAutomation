@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdrAutomate.WebUI", "PdrAutomate.WebUI\PdrAutomate.WebUI.csproj", "{D2C4A872-DE2D-4922-9E73-70F0623AE912}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdrAutomate.WebUI", "PdrAutomate.WebUI\PdrAutomate.WebUI.csproj", "{D2C4A872-DE2D-4922-9E73-70F0623AE912}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordMorphology", "WordMorphology\WordMorphology.csproj", "{C00D745F-861F-4431-A88F-6D88D3024C70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{D2C4A872-DE2D-4922-9E73-70F0623AE912}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2C4A872-DE2D-4922-9E73-70F0623AE912}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2C4A872-DE2D-4922-9E73-70F0623AE912}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C00D745F-861F-4431-A88F-6D88D3024C70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C00D745F-861F-4431-A88F-6D88D3024C70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C00D745F-861F-4431-A88F-6D88D3024C70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C00D745F-861F-4431-A88F-6D88D3024C70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

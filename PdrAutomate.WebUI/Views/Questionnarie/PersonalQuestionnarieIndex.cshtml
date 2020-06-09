@@ -1,0 +1,75 @@
+﻿@model List<Question>
+
+@{
+	ViewData["Title"] = "PersonalQuestionnarieIndex";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/js/bootstrap.min.js"></script>
+<script src="~/js/jquery-3.2.1.min.js"></script>
+<div class="main-content  py-5 mb-5">
+	<div class="container">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+					<h4>Beier Anketi</h4>
+					<hr>
+				</div>
+			</div>
+		</div>
+		<div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="container">
+				<p>
+					Sevgili öğrenciler,
+					Aşağıda eksik cümleler verilmiştir. Lütfen bunları sırasıyla okuyun ve eksikleri tamamlayın.
+					Cümleleri elinizden geldiği kadar çabuk tamamlamaya çalışın.
+					Eksik cümleleri istediğiniz gibi tamamlayabilirsiniz
+				</p>
+				<form>
+					@foreach (var question in Model)
+					{
+
+						<div class="form-group row">
+							<label for="inputPassword" name="question" id="@question.QuestionId" class="col-sm-3 col-form-label">@question.QuestionName</label>
+							<div class="col-sm-8">
+								<input class="form-control" name="answer" id="@question.QuestionId" required>
+							</div>
+						</div>
+					}
+					<button class="btn btn-primary" onclick="SubmitBeierQuestionnarie()" type="submit">Gönder</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+	function SubmitBeierQuestionnarie() {
+		var reply = confirm("Anketi göndermek istediğinize emin misiniz ?");
+		if (reply) {
+			var selectionMap = new Map();
+			var answers = document.getElementsByName("answer");
+			for (var i = 0; i < answers.length; i++) {
+				selectionMap.set(answers[i].id, answers[i].value)
+			}
+			$.ajax({
+					type: "POST",
+					url: "/Questionnarie/SendPersonalQuestionnarie?schooldId="
+						+@User.Identity.Name
+						+"&questionnarieName=Beier"
+                        + "&answers=" + JSON.stringify(Array.from(selectionMap)),
+					data: null,
+					contentType: "application/json; charset=utf-8",
+					success: function (response) {
+						alert(response);
+					},
+				});
+		}
+		else {
+			alert("Anket gönderimini iptal ettiniz.");
+		}
+	}
+
+</script>

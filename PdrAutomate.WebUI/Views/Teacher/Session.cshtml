@@ -1,0 +1,139 @@
+﻿
+@{
+	ViewData["Title"] = "Session";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<script src="~/js/popper.min.js"></script>
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/js/bootstrap.min.js"></script>
+<script src="~/js/jquery-3.2.1.min.js"></script>
+<div class="main-content  py-5 mb-5">
+	<div class="container">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-sm-6">
+					<h4>Oturum Ekle</h4>
+				</div>
+				<div>
+					<h4>Sınıf Ekle</h4>
+				</div>
+			</div>
+			<hr />
+		</div>
+		<div class="row mb-3 col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="col-sm-6">
+				<label>Başlangıç Zamanı Seçiniz</label>
+			</div>
+			<div class="col-sm-4">
+				<label>Sınıf Adını Giriniz </label>
+			</div>
+		</div>
+		<div class="row mb-3 col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="col-sm-6">
+				<input id="startTime" type="datetime-local" />
+			</div>
+			<div class="col-sm-1">
+				<select id="classNumber" class="selectpicker">
+					<option>9</option>
+					<option>10</option>
+					<option>11</option>
+					<option>12</option>
+				</select>
+			</div>
+			<div class="col-sm-2">
+				<select id="classWord" class="selectpicker">
+					<option>A</option>
+					<option>B</option>
+					<option>C</option>
+					<option>D</option>
+					<option>E</option>
+					<option>F</option>
+					<option>G</option>
+					<option>H</option>
+					<option>I</option>
+					<option>J</option>
+					<option>K</option>
+				</select>
+			</div>
+		</div>
+		<div class="row mb-3 col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="col-sm-6">
+				<label>Bitiş Zamanı Seçiniz</label>
+			</div>
+			<div class="col-sm-4">
+				<label>Sınıf Kapasitesi Giriniz </label>
+			</div>
+		</div>
+		<div class="row mb-3 col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="col-sm-6">
+				<input id="endTime" type="datetime-local" />
+			</div>
+			<div class="col-sm-4">
+				<input id="classCapacity" type="text" />
+			</div>
+		</div>
+		<div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="col-sm-1">
+				<button type="button" onclick="addSession()" class="btn btn-primary">Ekle</button>
+			</div>
+			<div class="col-sm-5">
+				<button type="button" class="btn btn-primary">
+					<a asp-controller="Teacher" asp-action="SessionList" style="color:white">
+						Görüntüle
+					</a>
+				</button>
+
+			</div>
+			<div class="col-sm-1">
+				<button type="button" onclick="addClass()" class="btn btn-primary">Ekle</button>
+			</div>
+			<div class="col-sm-2">
+				
+					<button type="button" class="btn btn-primary">
+						<a asp-controller="Teacher" asp-action="ClassList" style="color:white">
+							Görüntüle
+						</a>
+					</button>
+
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+
+    function addSession()
+    {
+    var startTime = document.getElementById('startTime').value;
+    var endTime = document.getElementById('endTime').value;
+        $.ajax({
+                type: "POST",
+                url: "/Teacher/AddSession?startTime=" + startTime +
+                    "&endTime=" + endTime,
+                data: null,
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    alert(response);
+                     window.location.reload()
+                },
+            });
+    }
+
+	function addClass()
+    {
+		var classNumber = document.getElementById('classNumber').value;
+		var classWord = document.getElementById('classWord').value;
+		var classCapacity = document.getElementById('classCapacity').value;
+        $.ajax({
+                type: "POST",
+                url: "/Teacher/AddClassroom?classNumber=" + classNumber 
+					+ "&classWord=" + classWord + 
+                    "&classCapacity=" + classCapacity,
+                data: null,
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    alert(response);
+                     window.location.reload()
+                },
+            });
+    }
+</script>

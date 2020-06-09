@@ -1,0 +1,106 @@
+﻿@model List<Presentation>
+@{
+    ViewData["Title"] = "PresentationList";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<script src="~/js/popper.min.js"></script>
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/js/bootstrap.min.js"></script>
+<script src="~/js/jquery-3.2.1.min.js"></script><div class="main-content py-5 mb-5">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <div class="container">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Sınıflar</h4>
+                    <hr />
+                </div>
+            </div>
+        </div>
+        <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="col-md-12">
+                <ul class="list-group">
+                    @foreach (var item in Model)
+                    {
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-6" align="right">
+                                    @item.PresentationName
+                                </div>
+                                <div class="toggle" id="dropdown-detail-@item.PresentationId.ToString()" data-toggle="detail-@item.PresentationId.ToString()">
+                                    <i class="fa fa-chevron-down pull-right"></i>
+                                </div>
+                            </div>
+                            <div id="detail-@item.PresentationId.ToString()">
+                                <hr>
+                                <div class="container">
+                                    <div class="fluid-row">
+                                        <div class="row mb-3 col-xs-1">
+                                            Sunum Adı @item.PresentationName
+                                        </div>
+                                        <div class="row mb-3 col-xs-1">
+                                            Oturumlar
+                                        </div>
+                                        @foreach (var session in item.Sessions)
+                                        {
+                                            <div class="row mb-3">
+                                                @if (item.ClassPresentationsessions.Count != 0 && item.ClassPresentationsessions != null)
+                                                {
+                                                    @if (@item.ClassPresentationsessions.Find(i => i.SessionId == session.SessionId) == null)
+                                                    {
+                                                        <text> Sınıf Atanmamış</text>
+                                                    }
+                                                    else
+                                                    {
+                                                        <text> Sınıf:</text>
+                                                        @item.ClassPresentationsessions.Find(i => i.SessionId == session.SessionId).Class.ClassName
+                                                    }
+                                                }
+                                            </div>
+                                            <div class="row mb-3 col-xs-1">
+                                                <div class="col-md-6">
+                                                    @session.Sessions.StartTime - @session.Sessions.EndTime
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button class="btn btn-danger" onclick="deletePresentation(@item.PresentationId,@session.SessionId)">
+                                                    Sil
+                                                </button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <hr />
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deletePresentation(pid, sid) {
+        $.ajax({
+            type: "POST",
+            url: "/Teacher/DeletePresentation?pid=" + pid + "&sid=" + sid,
+            data: null,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                alert(response);
+                window.location.reload()
+            },
+        });
+    }
+
+    $(document).ready(function () {
+        $('[id^=detail-]').hide();
+        $('.toggle').click(function () {
+            $input = $(this);
+            $target = $('#' + $input.attr('data-toggle'));
+            $target.slideToggle();
+        });
+    });
+</script>
+

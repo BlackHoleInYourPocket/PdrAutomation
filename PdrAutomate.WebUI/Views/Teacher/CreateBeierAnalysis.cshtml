@@ -1,0 +1,74 @@
+﻿@model BeierResult
+@{
+    ViewData["Title"] = "Beier Analysis";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+@{
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/jquery-3.2.1.min.js"></script>
+    <div class="table-responsive" id="sailorTableArea">
+        <table id="sailorTable" class="table table-striped table-bordered" width="100%">
+
+            <thead>
+                <tr>
+                    <th>Öğrenci Numarası</th>
+                    <th>Öğrenci Sınıfı</th>
+                    <th>Öğrenci Adı</th>
+                    <th>Öğrenci Soyadı</th>
+                    <th>Valence(Değer Verme)</th>
+                    <th>Arousal(Uyarılma)</th>
+                    <th>Dominance(Hakimiyet)</th>
+                    <th>Kategori</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td>@Model.Student.StudentSchoolId</td>
+                    <td>@Model.Student.Class.ClassName</td>
+                    <td>@Model.Student.StudentName</td>
+                    <td>@Model.Student.StudentSurname</td>
+                    <td>@Model.Valance</td>
+                    <td>@Model.Arousal</td>
+                    <td>@Model.Dominanace</td>
+                    <td>@Model.Result</td>
+                </tr>
+
+            </tbody>
+        </table>
+        <div class="container">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Beier Anket Analiz Değerlendirmesi</h4>
+                        <hr />
+                    </div>
+                    <div class="col-md-12">
+                        <p>
+                            Öğrencinizin, sistemdeki Beier anketine verdiği cevaplara göre oluşan Valence(Değer Verme),
+                            Arousal(Uyarılma), Dominance(Hakimiyet) sonuçları yukarıda görülmektedir.
+                        </p>
+                        <p>
+                            Bu çıkan değerlere göre öğrencinin sistemimiz tarafından sınıflandırıldığı
+                            risk kategorisi yukarıdadır.
+                        </p>
+                        <p>Değerlendirme Kriterleri</p>
+
+                        <p>A +,V+,D+ (En risksiz)</p>
+                        <p>A-, V+, D+ (Risksiz)</p>
+                        <p>A+,V-,D+ (Hayatından memnun değil ama kontrollü davranabiliyor)</p>
+                        <p>A-, V-, D+ (Depresif ama kontollü davranabiliyor)</p>
+                        <p>A+,V+,D- (Hayatından memnun görünüyor ama kontollü davranamayabilir)</p>
+                        <p>A-, V+,D- (Hayatından pek memnun değil, kontolünü kaybetme eğilimi var)</p>
+                        <p>A+,V-, D- (Şiddet eğilimli)</p>
+                        <p>A-, V-, D- (Kendine zarar verebilme eğilimli)</p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
