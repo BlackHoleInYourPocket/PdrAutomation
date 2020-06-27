@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -251,6 +252,13 @@ namespace PdrAutomate.WebUI.Controllers
 		public string SendPersonalQuestionnarie(string schooldId,string questionnarieName, string answers)
         {
             var questionIdAnswer = Newtonsoft.Json.JsonConvert.DeserializeObject<string[][]>(answers);
+            for(int i=0; i< questionIdAnswer.Length; i++)
+            {
+                if (questionIdAnswer[0][1].Trim(' ').Equals(""))
+                {
+                    return "Lütfen Tüm Alanları Doldurun";
+                }
+            }
             var studentId = uow.StudentDataAccess
                 .GetAll()
                 .Where(i => i.StudentSchoolId.Equals(schooldId))

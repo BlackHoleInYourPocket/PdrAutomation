@@ -20,6 +20,11 @@ namespace PdrAutomate.WebUI.IdentityCore
             var password = configuration["Data:AdminUser:password"];
             var role = configuration["Data:AdminUser:role"];
 
+            var iremusername = configuration["Data:AdminUser2:username"];
+            var irememail = configuration["Data:AdminUser2:email"];
+            var irempassword = configuration["Data:AdminUser2:password"];
+            var iremrole = configuration["Data:AdminUser2:role"];
+
             var teacherusername = configuration["Data:Teacher:username"];
             var teacheremail = configuration["Data:Teacher:email"];
             var teacherpassword = configuration["Data:Teacher:password"];
@@ -47,6 +52,27 @@ namespace PdrAutomate.WebUI.IdentityCore
                 }
             }
 
+            if (await userManager.FindByNameAsync(iremusername) == null)
+            {
+                if (await roleManager.FindByNameAsync(iremrole) == null)
+                {
+                    await roleManager.CreateAsync(new IdentityRole(iremrole));
+                }
+                ApplicationUser user = new ApplicationUser()
+                {
+                    UserName = iremusername,
+                    Email = irememail,
+                    Name = "irem",
+                    Surname = "Topal"
+
+                };
+
+                IdentityResult result = await userManager.CreateAsync(user, irempassword);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, iremrole);
+                }
+            }
             if (await userManager.FindByNameAsync(teacherusername) == null)
             {
                 if (await roleManager.FindByNameAsync(teacherrole) == null)

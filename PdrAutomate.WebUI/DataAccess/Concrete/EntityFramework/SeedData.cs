@@ -18,7 +18,7 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
             context.Database.Migrate();
             if (!context.AnewDictionaries.Any())
             {
-                using (var stream = File.Open(@"D:\GitRepoVisualStudio\PdrAutomate.WebUI\Resources\ANEW.xlsx", FileMode.Open, FileAccess.Read))
+                using (var stream = File.Open(@"D:\GitVisualStudio\PdrAutomate\PdrAutomate.WebUI\bin\Debug\netcoreapp2.2\ANEW.xlsx", FileMode.Open, FileAccess.Read))
                 {
                     using (var reader = ExcelReaderFactory.CreateReader(stream))
                     {
@@ -32,7 +32,7 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
                                     sb.Append(reader.GetValue(column));
                                     sb.Append("@");
                                 }
-                                string [] datas = sb.ToString().Split("@");
+                                string[] datas = sb.ToString().Split("@");
                                 var AnewRecord = new AnewDictionary()
                                 {
                                     TurkishContent = datas[0],
@@ -72,11 +72,11 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
                 {
                     new Presentation()
                     {
-                        PresentationName="Bilgisayar",
+                        PresentationName="Hukuk",
                     },
                     new Presentation()
                     {
-                        PresentationName="Kimya",
+                        PresentationName="Tıp",
                     },
                 };
                 context.AddRange(Presentations);
@@ -85,13 +85,13 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
                 {
                     new Sessions()
                     {
-                        StartTime=new DateTime(2020,02,02,9,0,0),
-                        EndTime =new DateTime(2020,02,02,9,0,0)
+                        StartTime=new DateTime(2020,06,28,9,0,0),
+                        EndTime =new DateTime(2020,06,28,10,0,0)
                     },
                     new Sessions()
                     {
-                        StartTime=new DateTime(2020,02,02,10,0,0),
-                        EndTime =new DateTime(2020,02,02,11,0,0)
+                        StartTime=new DateTime(2020,06,28,10,0,0),
+                        EndTime =new DateTime(2020,06,28,11,0,0)
                     },
                 };
                 context.AddRange(Sessions);
@@ -103,11 +103,19 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
                         StudentName="Seyfi",
                         StudentSurname="Zeyrek",
                         StudentSchoolId="2015510076",
-                        Password="seyf1903",
+                        Password="Seyf_1903",
                         Class=Classes[0]
+                    },
+                    new Student()
+                    {
+                        StudentName="İrem",
+                        StudentSurname="Topal",
+                        StudentSchoolId="2015510113",
+                        Password="Seyf_1903",
+                        Class=Classes[1]
                     }
                 };
-                context.AddRange(Sessions);
+                context.AddRange(Students);
 
                 var PresentationSessions = new[]
                 {
@@ -170,16 +178,6 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
 
                 context.AddRange(ClassPresentationSession);
 
-                var StudentPresentationSessions = new[]
-                {
-                    new StudentPresentationsession()
-                    {
-                        Student=Students[0],
-                        Presentation=Presentations[0],
-                        Sessions=Sessions[0]
-                    }
-                };
-                context.AddRange(StudentPresentationSessions);
                 context.SaveChanges();
             }
 
@@ -432,17 +430,6 @@ namespace PdrAutomate.WebUI.DataAccess.Concrete.EntityFramework
                     Question = new Question()
                     {
                         QuestionName = "Yaramazlık yaptığım zaman",
-                        IsCheckbox = false,
-
-                    }
-                };
-                context.AddRange(Q);
-                Q = new QuestionnarieQuestion()
-                {
-                    Questionnarie = BeierQuestionnarie,
-                    Question = new Question()
-                    {
-                        QuestionName = "Okulda",
                         IsCheckbox = false,
 
                     }
